@@ -9,15 +9,18 @@ import {
 import SearchInput from "../ui/SearchInput";
 
 
+
 interface Props {
 
-  title: string;
+  title:string;
 
-  users: InstagramUser[];
+  users:InstagramUser[];
 
-  showDate?: boolean;
+  showDate?:boolean;
 
 }
+
+
 
 
 
@@ -27,12 +30,14 @@ export default function UserList({
 
   showDate = false
 
-}: Props) {
+}:Props) {
 
 
 
-  const [search, setSearch] =
+  const [search,setSearch] =
     useState("");
+
+
 
 
 
@@ -49,30 +54,19 @@ export default function UserList({
 
 
 
-  function getInitial(
-    username:string
-  ) {
-
-    return username
-      .charAt(0)
-      .toUpperCase();
-
-  }
-
-
 
 
 
   return (
 
-    <div className="
-      space-y-3
-    ">
+    <div className="space-y-3">
+
+
 
 
 
       {
-        users.length > 5 &&
+        users.length > 8 &&
         (
 
           <SearchInput
@@ -90,203 +84,143 @@ export default function UserList({
 
 
 
-      {
-        filtered.length === 0
 
-        ?
 
-        (
+      <div className="
+        overflow-hidden
+        rounded-2xl
+        bg-[#1c1c1e]
+        divide-y
+        divide-white/5
+      ">
 
-          <div className="
-            py-6
-            text-center
-          ">
 
-            <p className="
+
+        {
+          filtered.length === 0
+
+          ?
+
+          (
+
+            <div className="
+              px-4
+              py-5
               text-sm
               text-gray-500
             ">
               Nessun utente trovato
-            </p>
+            </div>
 
-          </div>
+          )
 
-        )
+          :
 
-        :
+          filtered.map(
+            user =>
+            (
 
-        (
+              <a
 
-          <div className="
-            rounded-2xl
-            overflow-hidden
-            border
-            border-white/10
-            bg-black/10
-            divide-y
-            divide-white/10
-            max-h-96
-            overflow-y-auto
-          ">
+                key={
+                  user.username
+                }
 
+                href={
+                  user.profileUrl
+                }
 
+                target="_blank"
 
-            {
-              filtered.map(
+                rel="noreferrer"
 
-                user =>
+                className="
+                  flex
+                  items-center
+                  justify-between
+                  px-4
+                  py-3
+                  active:bg-white/10
+                  transition
+                "
 
-                (
-
-                  <a
-
-                    key={
-                      user.username
-                    }
-
-                    href={
-                      user.profileUrl
-                    }
-
-                    target="_blank"
-
-                    rel="noreferrer"
-
-                    className="
-                      flex
-                      items-center
-                      justify-between
-                      px-4
-                      py-3
-                      transition
-                      active:bg-white/10
-                      hover:bg-white/5
-                    "
-
-                  >
+              >
 
 
 
 
-                    <div className="
-                      flex
-                      items-center
-                      gap-3
-                    ">
+                <div>
 
 
+                  <div className="
+                    text-[15px]
+                    font-medium
+                    text-white
+                  ">
+                    @{user.username}
+                  </div>
+
+
+
+
+
+                  {
+                    showDate &&
+                    user.followedAt &&
+                    (
 
                       <div className="
-                        w-10
-                        h-10
-                        rounded-full
-                        bg-gradient-to-br
-                        from-purple-500
-                        via-pink-500
-                        to-orange-400
-                        flex
-                        items-center
-                        justify-center
-                        font-bold
-                        text-sm
-                        text-white
+                        text-xs
+                        text-gray-500
+                        mt-0.5
                       ">
 
                         {
-                          getInitial(
-                            user.username
+                          user.followedAt.toLocaleDateString(
+                            "it-IT",
+                            {
+                              day:"2-digit",
+                              month:"2-digit",
+                              year:"numeric"
+                            }
                           )
                         }
 
                       </div>
 
+                    )
+                  }
 
 
 
-
-                      <div>
-
-
-                        <div className="
-                          text-sm
-                          font-semibold
-                        ">
-
-                          @{user.username}
-
-                        </div>
+                </div>
 
 
 
 
 
-                        {
-                          showDate &&
-                          user.followedAt &&
-                          (
-
-                            <div className="
-                              text-xs
-                              text-gray-500
-                              mt-1
-                            ">
-
-                              Seguito il&nbsp;
-
-                              {
-                                user.followedAt.toLocaleDateString(
-                                  "it-IT",
-                                  {
-                                    day:"2-digit",
-                                    month:"short",
-                                    year:"numeric"
-                                  }
-                                )
-                              }
-
-                            </div>
-
-                          )
-                        }
-
-
-
-                      </div>
-
-
-
-                    </div>
+                <div className="
+                  text-gray-500
+                  text-lg
+                ">
+                  ›
+                </div>
 
 
 
 
+              </a>
 
-                    <div className="
-                      text-gray-500
-                      text-xl
-                    ">
+            )
 
-                      ›
+          )
 
-                    </div>
+        }
 
 
 
-                  </a>
+      </div>
 
-                )
-
-              )
-
-            }
-
-
-
-          </div>
-
-        )
-
-      }
 
 
 
