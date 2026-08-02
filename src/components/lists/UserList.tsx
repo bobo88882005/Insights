@@ -9,17 +9,15 @@ import {
 import SearchInput from "../ui/SearchInput";
 
 
-
 interface Props {
 
-  title:string;
+  title: string;
 
-  users:InstagramUser[];
+  users: InstagramUser[];
 
-  showDate?:boolean;
+  showDate?: boolean;
 
 }
-
 
 
 
@@ -27,14 +25,13 @@ export default function UserList({
 
   users,
 
-  showDate=false
+  showDate = false
 
-}:Props){
+}: Props) {
 
 
-  const [search,setSearch] =
+  const [search, setSearch] =
     useState("");
-
 
 
 
@@ -51,8 +48,6 @@ export default function UserList({
 
 
 
-
-
   return (
 
     <div>
@@ -61,9 +56,7 @@ export default function UserList({
       {
         users.length > 8 &&
 
-        <div className="
-          mb-3
-        ">
+        <div className="mb-3">
 
           <SearchInput
 
@@ -81,185 +74,171 @@ export default function UserList({
 
 
 
+      {
+        filtered.length === 0
 
-      <div
-        className="
-          rounded-2xl
-          overflow-hidden
-          border
-          border-white/10
-          bg-black/20
-        "
-      >
+        ?
 
+        (
 
+          <div
+            className="
+              py-8
+              text-center
+              text-sm
+              text-gray-500
+            "
+          >
 
-        {
-          filtered.length === 0
+            Nessun utente trovato
 
-          ?
+          </div>
 
+        )
 
-          (
+        :
 
-            <div
-              className="
-                py-8
-                text-center
-                text-sm
-                text-gray-500
-              "
-            >
+        (
 
-              Nessun utente trovato
-
-            </div>
-
-          )
-
-
-          :
+          <div
+            className="
+              rounded-2xl
+              overflow-hidden
+              border
+              border-white/10
+              bg-black/20
+            "
+          >
 
 
-          filtered.map(
-            (
-              user,
-              index
-            ) => (
+            {
+              filtered.map(
+                (
+                  user,
+                  index
+                ) => (
 
+                  <a
 
-              <a
+                    key={
+                      user.username
+                    }
 
-                key={
-                  user.username
-                }
+                    href={
+                      user.profileUrl
+                    }
 
+                    target="_blank"
 
-                href={
-                  user.profileUrl
-                }
+                    rel="noreferrer"
 
+                    className={`
+                      flex
+                      items-center
+                      justify-between
+                      px-4
+                      py-3
+                      transition
+                      active:bg-white/10
 
-                target="_blank"
+                      ${
+                        index !== filtered.length - 1
+                        ?
+                        "
+                        border-b
+                        border-white/5
+                        "
+                        :
+                        ""
+                      }
+                    `}
 
-
-                rel="noreferrer"
-
-
-                className={`
-                  flex
-                  items-center
-                  justify-between
-                  px-4
-                  py-3
-                  transition
-                  active:bg-white/10
-
-                  ${
-                    index !== filtered.length - 1
-
-                    ?
-
-                    "
-                    border-b
-                    border-white/5
-                    "
-
-                    :
-
-                    ""
-
-                  }
-
-                `}
-
-              >
-
-
-
-
-                <div>
-
-                  <div
-                    className="
-                      text-[15px]
-                      font-medium
-                      text-white
-                    "
                   >
 
-                    @{user.username}
 
-                  </div>
+                    <div>
 
-
-
-                  {
-                    showDate &&
-                    user.followedAt &&
-
-                    (
 
                       <div
                         className="
-                          text-xs
-                          text-gray-500
-                          mt-0.5
+                          text-[15px]
+                          font-medium
+                          text-white
                         "
                       >
 
-                        Seguito il {
-
-                          user.followedAt.toLocaleDateString(
-                            "it-IT",
-                            {
-                              day:"2-digit",
-                              month:"2-digit",
-                              year:"numeric"
-                            }
-                          )
-
-                        }
-
+                        @{user.username}
 
                       </div>
 
-                    )
-
-                  }
 
 
-                </div>
+                      {
+                        showDate &&
+                        user.followedAt &&
+
+                        (
+
+                          <div
+                            className="
+                              mt-1
+                              text-xs
+                              text-gray-500
+                            "
+                          >
+
+                            Seguito il{" "}
+
+                            {
+                              user.followedAt.toLocaleDateString(
+                                "it-IT",
+                                {
+                                  day:"2-digit",
+                                  month:"2-digit",
+                                  year:"numeric"
+                                }
+                              )
+                            }
+
+
+                          </div>
+
+                        )
+
+                      }
+
+
+                    </div>
 
 
 
+                    <div
+                      className="
+                        text-gray-600
+                        text-lg
+                      "
+                    >
 
+                      ›
 
-                <div
-                  className="
-                    text-gray-600
-                    text-lg
-                  "
-                >
-
-                  ›
-
-                </div>
-
-
-
-              </a>
-
-
-            )
-
-          )
-
-        }
+                    </div>
 
 
 
-      </div>
+                  </a>
+
+                )
+
+              )
+
+            }
+
+
+          </div>
+
+        )
+
+      }
 
 
 
