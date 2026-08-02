@@ -4,6 +4,7 @@ import {
   InstagramUser
 } from "../types/instagram";
 
+
 import {
   isExcluded
 } from "./exclusions";
@@ -12,17 +13,19 @@ import {
 
 
 
+
+
 function uniqueUsers(
-  users: InstagramUser[]
-): InstagramUser[] {
+  users:InstagramUser[]
+):InstagramUser[]{
 
 
   const map =
-    new Map<string, InstagramUser>();
+    new Map<string,InstagramUser>();
 
 
   users.forEach(
-    user => {
+    user=>{
 
 
       const username =
@@ -32,9 +35,7 @@ function uniqueUsers(
 
 
 
-      if(
-        !username
-      )
+      if(!username)
         return;
 
 
@@ -72,16 +73,12 @@ function uniqueUsers(
 
 
 
+
+
 export function analyzeInstagram(
-  data: ParsedInstagramData
-): InstagramAnalysis {
+  data:ParsedInstagramData
+):InstagramAnalysis {
 
-
-
-  /*
-    Pulizia dati importati
-    __deleted__ esclusi ovunque
-  */
 
 
   const followers =
@@ -123,6 +120,8 @@ export function analyzeInstagram(
 
 
 
+
+
   const followerNames =
     new Set(
       followers.map(
@@ -147,15 +146,17 @@ export function analyzeInstagram(
 
 
 
+
+
   /*
     Esclusioni manuali
 
-    Questi utenti sono considerati
-    possibili inattivi
+    Questa è l'unica lista
+    dei possibili inattivi
   */
 
 
-  const excludedUsers =
+  const possibleInactive =
     following.filter(
       user =>
         isExcluded(
@@ -165,6 +166,15 @@ export function analyzeInstagram(
 
 
 
+
+
+
+
+
+  /*
+    Following reale
+    senza esclusioni manuali
+  */
 
 
   const cleanFollowing =
@@ -181,10 +191,6 @@ export function analyzeInstagram(
 
 
 
-  /*
-    Utenti che segui ma
-    che non ti seguono
-  */
 
 
   const notFollowingBack =
@@ -201,10 +207,6 @@ export function analyzeInstagram(
 
 
 
-  /*
-    Utenti che ti seguono
-    ma che tu non segui
-  */
 
 
   const youDontFollowBack =
@@ -221,9 +223,6 @@ export function analyzeInstagram(
 
 
 
-  /*
-    Follow reciproci
-  */
 
 
   const reciprocal =
@@ -235,21 +234,6 @@ export function analyzeInstagram(
     );
 
 
-
-
-
-
-
-
-  /*
-    Possibili inattivi
-
-    SOLO esclusioni manuali
-  */
-
-
-  const possibleInactive =
-    excludedUsers;
 
 
 
@@ -292,10 +276,6 @@ export function analyzeInstagram(
 
 
 
-    excludedUsers,
-
-
-
     followersCount:
       followers.length,
 
@@ -311,8 +291,8 @@ export function analyzeInstagram(
 
 
 
-    excludedCount:
-      excludedUsers.length,
+    inactiveCount:
+      possibleInactive.length,
 
 
 
@@ -327,12 +307,7 @@ export function analyzeInstagram(
 
 
     youDontFollowBackCount:
-      youDontFollowBack.length,
-
-
-
-    inactiveCount:
-      possibleInactive.length
+      youDontFollowBack.length
 
   };
 
