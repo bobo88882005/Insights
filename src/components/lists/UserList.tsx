@@ -2,9 +2,11 @@ import {
   useState
 } from "react";
 
+
 import {
   InstagramUser
 } from "../../types/instagram";
+
 
 import SearchInput from "../ui/SearchInput";
 
@@ -23,21 +25,17 @@ interface Props {
 
 
 
-
 export default function UserList({
 
   users,
 
-  showDate = false
+  showDate=false
 
-}:Props) {
-
+}:Props){
 
 
   const [search,setSearch] =
     useState("");
-
-
 
 
 
@@ -53,175 +51,131 @@ export default function UserList({
 
 
 
-
-
-
-
   return (
 
-    <div className="space-y-3">
-
-
-
+    <div>
 
 
       {
         users.length > 8 &&
-        (
+        <SearchInput
 
-          <SearchInput
+          value={search}
 
-            value={search}
+          onChange={setSearch}
 
-            onChange={setSearch}
-
-          />
-
-        )
+        />
       }
 
 
 
 
-
-
-
       <div className="
+        mt-3
+        rounded-xl
         overflow-hidden
-        rounded-2xl
-        bg-[#1c1c1e]
-        divide-y
-        divide-white/5
+        border
+        border-white/10
       ">
 
 
+      {
+        filtered.length === 0
 
-        {
-          filtered.length === 0
+        ?
 
-          ?
+        <div className="
+          p-4
+          text-center
+          text-sm
+          text-gray-500
+        ">
+          Nessun utente
+        </div>
 
-          (
 
-            <div className="
-              px-4
-              py-5
-              text-sm
-              text-gray-500
-            ">
-              Nessun utente trovato
-            </div>
+        :
 
-          )
 
-          :
+        filtered.map(
+          (user,index)=>(
 
-          filtered.map(
-            user =>
-            (
 
-              <a
+            <a
 
-                key={
-                  user.username
+              key={user.username}
+
+              href={user.profileUrl}
+
+              target="_blank"
+
+              rel="noreferrer"
+
+              className={`
+                flex
+                items-center
+                justify-between
+                px-4
+                py-3
+                bg-black/20
+                transition
+                hover:bg-white/5
+                ${
+                  index !== filtered.length-1
+                  ? "border-b border-white/5"
+                  : ""
                 }
+              `}
 
-                href={
-                  user.profileUrl
-                }
+            >
 
-                target="_blank"
 
-                rel="noreferrer"
-
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  px-4
-                  py-3
-                  active:bg-white/10
-                  transition
-                "
-
-              >
+              <span className="
+                text-sm
+                text-white
+              ">
+                @{user.username}
+              </span>
 
 
 
+              {
+                showDate &&
+                user.followedAt &&
+                (
 
-                <div>
-
-
-                  <div className="
-                    text-[15px]
-                    font-medium
-                    text-white
+                  <span className="
+                    text-xs
+                    text-gray-500
                   ">
-                    @{user.username}
-                  </div>
 
-
-
-
-
-                  {
-                    showDate &&
-                    user.followedAt &&
-                    (
-
-                      <div className="
-                        text-xs
-                        text-gray-500
-                        mt-0.5
-                      ">
-
+                    {
+                      user.followedAt.toLocaleDateString(
+                        "it-IT",
                         {
-                          user.followedAt.toLocaleDateString(
-                            "it-IT",
-                            {
-                              day:"2-digit",
-                              month:"2-digit",
-                              year:"numeric"
-                            }
-                          )
+                          day:"2-digit",
+                          month:"2-digit",
+                          year:"numeric"
                         }
+                      )
+                    }
 
-                      </div>
+                  </span>
 
-                    )
-                  }
-
-
-
-                </div>
+                )
+              }
 
 
+            </a>
 
-
-
-                <div className="
-                  text-gray-500
-                  text-lg
-                ">
-                  ›
-                </div>
-
-
-
-
-              </a>
-
-            )
 
           )
+        )
 
-        }
-
+      }
 
 
       </div>
-
-
 
 
     </div>
