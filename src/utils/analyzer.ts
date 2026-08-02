@@ -41,6 +41,7 @@ function uniqueUsers(
 
 
 
+
 function removeDeletedUsers(
   users: InstagramUser[]
 ): InstagramUser[] {
@@ -83,6 +84,7 @@ export function analyzeInstagram(
 
 
 
+
   const followerNames =
     new Set(
       followers.map(
@@ -90,6 +92,7 @@ export function analyzeInstagram(
           user.username.toLowerCase()
       )
     );
+
 
 
 
@@ -134,6 +137,7 @@ export function analyzeInstagram(
 
 
 
+
   const notFollowingBack =
     cleanFollowing.filter(
       user =>
@@ -141,6 +145,7 @@ export function analyzeInstagram(
           user.username.toLowerCase()
         )
     );
+
 
 
 
@@ -162,6 +167,7 @@ export function analyzeInstagram(
 
 
 
+
   const reciprocal =
     cleanFollowing.filter(
       user =>
@@ -176,11 +182,112 @@ export function analyzeInstagram(
 
 
 
+  const reciprocalPercentage =
+
+    cleanFollowing.length > 0
+
+      ?
+
+      Math.round(
+        (reciprocal.length /
+          cleanFollowing.length) *
+        100
+      )
+
+      :
+
+      0;
+
+
+
+
+
+
+
+  const notFollowingBackPercentage =
+
+    cleanFollowing.length > 0
+
+      ?
+
+      Math.round(
+        (notFollowingBack.length /
+          cleanFollowing.length) *
+        100
+      )
+
+      :
+
+      0;
+
+
+
+
+
+
+
+
+  const engagementRate =
+
+    followers.length > 0
+
+      ?
+
+      Math.round(
+        (reciprocal.length /
+          followers.length) *
+        100
+      )
+
+      :
+
+      0;
+
+
+
+
+
+
+
+
+  const profileScore =
+
+    Math.max(
+
+      0,
+
+      Math.min(
+
+        100,
+
+        Math.round(
+
+          reciprocalPercentage -
+
+          (
+            notFollowingBackPercentage /
+            2
+          )
+
+        )
+
+      )
+
+    );
+
+
+
+
+
+
+
+
 
   return {
 
 
     followers,
+
 
 
     following:
@@ -193,6 +300,8 @@ export function analyzeInstagram(
 
 
     youDontFollowBack,
+
+
 
 
 
@@ -211,14 +320,19 @@ export function analyzeInstagram(
 
 
 
-    // Gli inattivi coincidono SOLO
-    // con le esclusioni manuali
+
+
+
     possibleInactive:
       excludedUsers,
 
 
 
     excludedUsers,
+
+
+
+
 
 
 
@@ -247,6 +361,10 @@ export function analyzeInstagram(
 
 
 
+
+
+
+
     reciprocalCount:
       reciprocal.length,
 
@@ -258,7 +376,28 @@ export function analyzeInstagram(
 
 
     youDontFollowBackCount:
-      youDontFollowBack.length
+      youDontFollowBack.length,
+
+
+
+
+
+
+
+    reciprocalPercentage,
+
+
+
+    notFollowingBackPercentage,
+
+
+
+    engagementRate,
+
+
+
+    profileScore
+
 
   };
 
