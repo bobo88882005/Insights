@@ -4,21 +4,36 @@ import {
   InstagramUser
 } from "../types/instagram";
 
-import { isExcluded } from "./exclusions";
+import {
+  isExcluded
+} from "./exclusions";
+
 
 
 function uniqueUsers(
   users: InstagramUser[]
 ): InstagramUser[] {
 
-  const map = new Map<string, InstagramUser>();
+  const map =
+    new Map<string, InstagramUser>();
+
 
   users.forEach(user => {
-    map.set(user.username, user);
+
+    map.set(
+      user.username,
+      user
+    );
+
   });
 
-  return Array.from(map.values());
+
+  return Array.from(
+    map.values()
+  );
+
 }
+
 
 
 
@@ -27,45 +42,62 @@ export function analyzeInstagram(
 ): InstagramAnalysis {
 
 
+
   const followers =
-    uniqueUsers(data.followers);
+    uniqueUsers(
+      data.followers
+    );
+
 
 
   const following =
-    uniqueUsers(data.following);
+    uniqueUsers(
+      data.following
+    );
 
 
 
   const followerNames =
     new Set(
       followers.map(
-        user => user.username
+        user =>
+          user.username
       )
     );
+
 
 
   const followingNames =
     new Set(
       following.map(
-        user => user.username
+        user =>
+          user.username
       )
     );
+
 
 
 
   const excludedUsers =
     following.filter(
       user =>
-        isExcluded(user.username)
+        isExcluded(
+          user.username
+        )
     );
+
 
 
 
   const cleanFollowing =
     following.filter(
       user =>
-        !isExcluded(user.username)
+        !isExcluded(
+          user.username
+        )
     );
+
+
 
 
 
@@ -79,6 +111,8 @@ export function analyzeInstagram(
 
 
 
+
+
   const youDontFollowBack =
     followers.filter(
       user =>
@@ -86,6 +120,8 @@ export function analyzeInstagram(
           user.username
         )
     );
+
+
 
 
 
@@ -99,14 +135,17 @@ export function analyzeInstagram(
 
 
 
+
+
   /*
-    Possibili inattivi:
-    per ora usiamo la lista esclusioni
-    come base.
+    Al momento gli inattivi
+    coincidono con gli utenti
+    esclusi manualmente.
+
     In seguito aggiungeremo:
-    - follower senza attività
-    - profili vuoti
-    - segnali dall'export
+    - profili senza attività
+    - profili eliminati
+    - segnali dall'export Instagram
   */
 
   const possibleInactive =
@@ -114,57 +153,92 @@ export function analyzeInstagram(
 
 
 
+
+
   return {
+
 
     followers,
 
-    following: cleanFollowing,
+
+    following:
+      cleanFollowing,
+
 
 
     notFollowingBack,
 
+
+
     youDontFollowBack,
+
 
 
     pendingRequests:
       data.pendingRequests,
 
+
+
     receivedRequests:
       data.receivedRequests,
+
+
 
     recentlyUnfollowed:
       data.recentlyUnfollowed,
 
 
+
     possibleInactive,
 
 
+
     excludedUsers,
+
 
 
     followersCount:
       followers.length,
 
 
+
+    // following effettivi dopo esclusioni
     followingCount:
       cleanFollowing.length,
+
+
+
+    // following originali dall'export
+    originalFollowingCount:
+      following.length,
+
+
+
+    // utenti esclusi manualmente
+    excludedCount:
+      excludedUsers.length,
+
 
 
     reciprocalCount:
       reciprocal.length,
 
 
+
     notFollowingBackCount:
       notFollowingBack.length,
+
 
 
     youDontFollowBackCount:
       youDontFollowBack.length,
 
 
+
     inactiveCount:
       possibleInactive.length
 
   };
+
 
 }
