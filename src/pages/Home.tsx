@@ -1,6 +1,4 @@
-import {
-  useRef
-} from "react";
+import { useRef } from "react";
 
 import {
   Users,
@@ -9,9 +7,10 @@ import {
   Upload
 } from "lucide-react";
 
-import UserList from "../components/lists/UserList";
-import SectionCard from "../components/ui/SectionCard";
 import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
+
+import UserList from "../components/lists/UserList";
+import CollapsibleCard from "../components/ui/CollapsibleCard";
 
 
 export default function Home() {
@@ -25,8 +24,7 @@ export default function Home() {
     loading,
     error,
     uploadZip
-  } =
-    useInstagramAnalyzer();
+  } = useInstagramAnalyzer();
 
 
 
@@ -44,11 +42,9 @@ export default function Home() {
       event.target.files?.[0];
 
 
-    if (!file)
-      return;
-
-
-    await uploadZip(file);
+    if (file) {
+      await uploadZip(file);
+    }
 
   }
 
@@ -56,44 +52,42 @@ export default function Home() {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-5">
 
 
-      <section>
+      <div>
 
-        <h2 className="
-          text-3xl
+        <h1 className="
+          text-2xl
           font-bold
         ">
           Instagram Insights
-        </h2>
+        </h1>
 
 
         <p className="
           text-gray-400
-          mt-2
+          text-sm
         ">
-          Analizza followers e following dal tuo export Instagram.
+          Analisi followers e following
         </p>
 
-      </section>
+      </div>
 
 
 
-      <section className="
+      <div className="
         grid
         grid-cols-2
-        md:grid-cols-4
-        gap-4
+        gap-3
       ">
-
 
         <StatCard
           title="Followers"
           value={
             analysis?.followersCount ?? 0
           }
-          icon={<Users />}
+          icon={<Users size={18}/>}
         />
 
 
@@ -102,8 +96,19 @@ export default function Home() {
           value={
             analysis?.followingCount ?? 0
           }
-          icon={<Users />}
+          icon={<Users size={18}/>}
         />
+
+
+      </div>
+
+
+
+      <div className="
+        grid
+        grid-cols-2
+        gap-3
+      ">
 
 
         <StatCard
@@ -111,31 +116,31 @@ export default function Home() {
           value={
             analysis?.notFollowingBackCount ?? 0
           }
-          icon={<UserMinus />}
+          icon={<UserMinus size={18}/>}
         />
 
 
         <StatCard
-          title="Possibili inattivi"
+          title="Inattivi"
           value={
             analysis?.inactiveCount ?? 0
           }
-          icon={<UserX />}
+          icon={<UserX size={18}/>}
         />
 
 
-      </section>
+      </div>
 
 
 
 
 
-      <section className="
+      <div className="
         rounded-xl
         border
         border-white/10
         bg-white/5
-        p-6
+        p-4
       ">
 
 
@@ -148,65 +153,50 @@ export default function Home() {
         />
 
 
-        <div className="
-          flex
-          flex-col
-          items-center
-          gap-4
-        ">
-
-
-          <Upload size={40}/>
-
-
-          <h3 className="
-            text-xl
+        <button
+          onClick={openFilePicker}
+          className="
+            w-full
+            flex
+            justify-center
+            items-center
+            gap-2
+            rounded-full
+            py-3
+            bg-gradient-to-r
+            from-purple-500
+            via-pink-500
+            to-orange-400
             font-semibold
-          ">
-            Carica il tuo export Instagram
-          </h3>
+          "
+        >
 
-
-          <button
-            onClick={openFilePicker}
-            className="
-              px-5
-              py-3
-              rounded-full
-              bg-gradient-to-r
-              from-purple-500
-              via-pink-500
-              to-orange-400
-              font-semibold
-            "
-          >
-
-            {
-              loading
-                ? "Analisi..."
-                : "Seleziona ZIP"
-            }
-
-          </button>
-
-
+          <Upload size={18}/>
 
           {
-            error &&
-            (
-              <p className="
-                text-red-400
-              ">
-                {error}
-              </p>
-            )
+            loading
+              ? "Analisi..."
+              : "Carica ZIP Instagram"
           }
 
+        </button>
 
-        </div>
+
+        {
+          error &&
+          (
+            <p className="
+              text-red-400
+              text-sm
+              mt-3
+            ">
+              {error}
+            </p>
+          )
+        }
 
 
-      </section>
+      </div>
 
 
 
@@ -216,14 +206,10 @@ export default function Home() {
         analysis &&
         (
 
-          <section className="
-            grid
-            md:grid-cols-2
-            gap-4
-          ">
+          <div className="space-y-3">
 
 
-            <SectionCard
+            <CollapsibleCard
               title="Non ricambiano"
               count={
                 analysis.notFollowingBackCount
@@ -237,11 +223,11 @@ export default function Home() {
                 }
               />
 
-            </SectionCard>
+            </CollapsibleCard>
 
 
 
-            <SectionCard
+            <CollapsibleCard
               title="Possibili inattivi"
               count={
                 analysis.inactiveCount
@@ -255,14 +241,108 @@ export default function Home() {
                 }
               />
 
-            </SectionCard>
+            </CollapsibleCard>
 
 
-          </section>
+
+
+            <CollapsibleCard
+              title="Followers"
+              count={
+                analysis.followersCount
+              }
+            >
+
+              <UserList
+                title=""
+                users={
+                  analysis.followers
+                }
+              />
+
+            </CollapsibleCard>
+
+
+
+
+            <CollapsibleCard
+              title="Following"
+              count={
+                analysis.followingCount
+              }
+            >
+
+              <UserList
+                title=""
+                users={
+                  analysis.following
+                }
+              />
+
+            </CollapsibleCard>
+
+
+
+
+            <CollapsibleCard
+              title="Richieste ricevute"
+              count={
+                analysis.receivedRequests.length
+              }
+            >
+
+              <UserList
+                title=""
+                users={
+                  analysis.receivedRequests
+                }
+              />
+
+            </CollapsibleCard>
+
+
+
+
+            <CollapsibleCard
+              title="Pending requests"
+              count={
+                analysis.pendingRequests.length
+              }
+            >
+
+              <UserList
+                title=""
+                users={
+                  analysis.pendingRequests
+                }
+              />
+
+            </CollapsibleCard>
+
+
+
+
+            <CollapsibleCard
+              title="Recently unfollowed"
+              count={
+                analysis.recentlyUnfollowed.length
+              }
+            >
+
+              <UserList
+                title=""
+                users={
+                  analysis.recentlyUnfollowed
+                }
+              />
+
+            </CollapsibleCard>
+
+
+          </div>
 
         )
       }
-
 
 
     </div>
@@ -270,7 +350,6 @@ export default function Home() {
   );
 
 }
-
 
 
 
@@ -290,31 +369,31 @@ function StatCard({
 
     <div className="
       rounded-xl
-      bg-white/5
       border
       border-white/10
-      p-4
+      bg-white/5
+      p-3
     ">
 
 
       <div className="
         text-pink-400
-        mb-3
       ">
         {icon}
       </div>
 
 
       <div className="
-        text-2xl
+        text-xl
         font-bold
+        mt-2
       ">
         {value}
       </div>
 
 
       <div className="
-        text-sm
+        text-xs
         text-gray-400
       ">
         {title}
