@@ -1,5 +1,6 @@
 export const MANUAL_EXCLUSIONS = new Set<string>([
   "_u",
+  "segui",
   "andrea.old",
   "siro.valmont",
   "discor_dantes",
@@ -80,11 +81,52 @@ export const MANUAL_EXCLUSIONS = new Set<string>([
   "carmineroger",
   "maria_tis_geitonias__",
   "alex_kova80",
-  "seguimi",
+  "micheleguglielmo",
+  "itssadrijajedisson",
+  "ljr17_97",
+  "bjelotschka",
+  "campisi.simona",
+  "ioeio91",
+  "xofferet",
+  "ileo12",
+  "itsmejaackoog",
+  "letswalkwithflo",
+  "826271811919181716hah82881",
+  "cris_valp",
+  "xsimoneinguantax",
+  "indianoss",
+  "profiloinattivo8",
+  "caos_",
+  "anothertommi",
+  "leonardo_mira",
+  "johnvalenmart",
+  "william_woodryan",
+  "dave_chain",
+  "luanalvarenga",
+  "chicocantabru",
+  "dsmp_trc",
+  "emio_l",
+  "maurochristie._",
+  "demian_green",
+  "edu_lozano90",
+  "kurtleburger",
+  "domemi",
+  "gtet",
+  "lorenzo_fr_",
+  "lemiroirdeneptune",
+  "davdzd",
+  "c_christian_",
+  "domenicodome1",
+  "polofresco"
 ]);
 
-export function isExcluded(username: string): boolean {
+
+export function isExcluded(
+  username: string
+): boolean {
+
   return MANUAL_EXCLUSIONS.has(
     username.toLowerCase()
   );
+
 }
