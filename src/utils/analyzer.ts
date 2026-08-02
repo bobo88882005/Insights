@@ -4,7 +4,6 @@ import {
   InstagramUser
 } from "../types/instagram";
 
-
 import {
   isExcluded
 } from "./exclusions";
@@ -13,52 +12,22 @@ import {
 
 
 
-
-
 function uniqueUsers(
-  users:InstagramUser[]
-):InstagramUser[]{
-
+  users: InstagramUser[]
+): InstagramUser[] {
 
   const map =
-    new Map<string,InstagramUser>();
+    new Map<string, InstagramUser>();
 
 
-  users.forEach(
-    user=>{
+  users.forEach(user => {
 
+    map.set(
+      user.username.toLowerCase(),
+      user
+    );
 
-      const username =
-        user.username
-          .toLowerCase()
-          .trim();
-
-
-
-      if(!username)
-        return;
-
-
-
-      if(
-        username.startsWith("__deleted__")
-      )
-        return;
-
-
-
-      map.set(
-        username,
-        {
-          ...user,
-          username
-        }
-      );
-
-
-    }
-  );
-
+  });
 
 
   return Array.from(
@@ -72,52 +41,44 @@ function uniqueUsers(
 
 
 
+function removeDeletedUsers(
+  users: InstagramUser[]
+): InstagramUser[] {
+
+  return users.filter(
+    user =>
+      !user.username.startsWith("__deleted__")
+  );
+
+}
+
+
+
+
 
 
 
 export function analyzeInstagram(
-  data:ParsedInstagramData
-):InstagramAnalysis {
+  data: ParsedInstagramData
+): InstagramAnalysis {
 
 
 
   const followers =
-    uniqueUsers(
-      data.followers
+    removeDeletedUsers(
+      uniqueUsers(
+        data.followers
+      )
     );
 
 
 
   const following =
-    uniqueUsers(
-      data.following
+    removeDeletedUsers(
+      uniqueUsers(
+        data.following
+      )
     );
-
-
-
-  const pendingRequests =
-    uniqueUsers(
-      data.pendingRequests
-    );
-
-
-
-  const receivedRequests =
-    uniqueUsers(
-      data.receivedRequests
-    );
-
-
-
-  const recentlyUnfollowed =
-    uniqueUsers(
-      data.recentlyUnfollowed
-    );
-
-
-
-
-
 
 
 
@@ -126,9 +87,10 @@ export function analyzeInstagram(
     new Set(
       followers.map(
         user =>
-          user.username
+          user.username.toLowerCase()
       )
     );
+
 
 
 
@@ -136,7 +98,7 @@ export function analyzeInstagram(
     new Set(
       following.map(
         user =>
-          user.username
+          user.username.toLowerCase()
       )
     );
 
@@ -145,18 +107,7 @@ export function analyzeInstagram(
 
 
 
-
-
-
-  /*
-    Esclusioni manuali
-
-    Questa è l'unica lista
-    dei possibili inattivi
-  */
-
-
-  const possibleInactive =
+  const excludedUsers =
     following.filter(
       user =>
         isExcluded(
@@ -167,14 +118,6 @@ export function analyzeInstagram(
 
 
 
-
-
-
-
-  /*
-    Following reale
-    senza esclusioni manuali
-  */
 
 
   const cleanFollowing =
@@ -191,17 +134,13 @@ export function analyzeInstagram(
 
 
 
-
-
   const notFollowingBack =
     cleanFollowing.filter(
       user =>
         !followerNames.has(
-          user.username
+          user.username.toLowerCase()
         )
     );
-
-
 
 
 
@@ -213,11 +152,9 @@ export function analyzeInstagram(
     followers.filter(
       user =>
         !followingNames.has(
-          user.username
+          user.username.toLowerCase()
         )
     );
-
-
 
 
 
@@ -229,10 +166,9 @@ export function analyzeInstagram(
     cleanFollowing.filter(
       user =>
         followerNames.has(
-          user.username
+          user.username.toLowerCase()
         )
     );
-
 
 
 
@@ -260,19 +196,29 @@ export function analyzeInstagram(
 
 
 
-    pendingRequests,
+    pendingRequests:
+      data.pendingRequests,
 
 
 
-    receivedRequests,
+    receivedRequests:
+      data.receivedRequests,
 
 
 
-    recentlyUnfollowed,
+    recentlyUnfollowed:
+      data.recentlyUnfollowed,
 
 
 
-    possibleInactive,
+    // Gli inattivi coincidono SOLO
+    // con le esclusioni manuali
+    possibleInactive:
+      excludedUsers,
+
+
+
+    excludedUsers,
 
 
 
@@ -291,8 +237,13 @@ export function analyzeInstagram(
 
 
 
+    excludedCount:
+      excludedUsers.length,
+
+
+
     inactiveCount:
-      possibleInactive.length,
+      excludedUsers.length,
 
 
 
@@ -310,6 +261,5 @@ export function analyzeInstagram(
       youDontFollowBack.length
 
   };
-
 
 }
