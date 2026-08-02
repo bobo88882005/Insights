@@ -42,9 +42,11 @@ export default function Home() {
       event.target.files?.[0];
 
 
-    if (file) {
-      await uploadZip(file);
-    }
+    if (!file)
+      return;
+
+
+    await uploadZip(file);
 
   }
 
@@ -52,7 +54,9 @@ export default function Home() {
 
   return (
 
-    <div className="space-y-5">
+    <div className="
+      space-y-5
+    ">
 
 
       <div>
@@ -76,31 +80,54 @@ export default function Home() {
 
 
 
+
       <div className="
         grid
         grid-cols-2
         gap-3
       ">
 
+
         <StatCard
+
           title="Followers"
+
           value={
             analysis?.followersCount ?? 0
           }
-          icon={<Users size={18}/>}
+
+          icon={
+            <Users size={18}/>
+          }
+
         />
 
 
+
         <StatCard
+
           title="Following"
+
           value={
             analysis?.followingCount ?? 0
           }
-          icon={<Users size={18}/>}
+
+          subtitle={
+            analysis
+              ? `${analysis.excludedCount} esclusi`
+              : ""
+          }
+
+          icon={
+            <Users size={18}/>
+          }
+
         />
 
 
       </div>
+
+
 
 
 
@@ -112,24 +139,38 @@ export default function Home() {
 
 
         <StatCard
+
           title="Non ricambiano"
+
           value={
             analysis?.notFollowingBackCount ?? 0
           }
-          icon={<UserMinus size={18}/>}
+
+          icon={
+            <UserMinus size={18}/>
+          }
+
         />
 
 
+
         <StatCard
-          title="Inattivi"
+
+          title="Possibili inattivi"
+
           value={
             analysis?.inactiveCount ?? 0
           }
-          icon={<UserX size={18}/>}
+
+          icon={
+            <UserX size={18}/>
+          }
+
         />
 
 
       </div>
+
 
 
 
@@ -145,16 +186,25 @@ export default function Home() {
 
 
         <input
+
           ref={fileInput}
+
           type="file"
+
           accept=".zip"
+
           hidden
+
           onChange={handleFile}
+
         />
 
 
+
         <button
+
           onClick={openFilePicker}
+
           className="
             w-full
             flex
@@ -169,9 +219,11 @@ export default function Home() {
             to-orange-400
             font-semibold
           "
+
         >
 
           <Upload size={18}/>
+
 
           {
             loading
@@ -179,19 +231,26 @@ export default function Home() {
               : "Carica ZIP Instagram"
           }
 
+
         </button>
+
+
 
 
         {
           error &&
           (
+
             <p className="
               text-red-400
               text-sm
               mt-3
             ">
+
               {error}
+
             </p>
+
           )
         }
 
@@ -202,43 +261,63 @@ export default function Home() {
 
 
 
+
+
       {
         analysis &&
         (
 
-          <div className="space-y-3">
+          <div className="
+            space-y-3
+          ">
+
 
 
             <CollapsibleCard
+
               title="Non ricambiano"
+
               count={
                 analysis.notFollowingBackCount
               }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.notFollowingBack
                 }
+
               />
 
             </CollapsibleCard>
 
 
 
+
+
+
             <CollapsibleCard
+
               title="Possibili inattivi"
+
               count={
                 analysis.inactiveCount
               }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.possibleInactive
                 }
+
               />
 
             </CollapsibleCard>
@@ -246,18 +325,26 @@ export default function Home() {
 
 
 
+
+
             <CollapsibleCard
+
               title="Followers"
+
               count={
                 analysis.followersCount
               }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.followers
                 }
+
               />
 
             </CollapsibleCard>
@@ -265,18 +352,27 @@ export default function Home() {
 
 
 
+
+
+
             <CollapsibleCard
+
               title="Following"
+
               count={
                 analysis.followingCount
               }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.following
                 }
+
               />
 
             </CollapsibleCard>
@@ -284,18 +380,27 @@ export default function Home() {
 
 
 
+
+
+
             <CollapsibleCard
+
               title="Richieste ricevute"
+
               count={
                 analysis.receivedRequests.length
               }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.receivedRequests
                 }
+
               />
 
             </CollapsibleCard>
@@ -303,46 +408,67 @@ export default function Home() {
 
 
 
+
+
+
             <CollapsibleCard
+
               title="Pending requests"
+
               count={
                 analysis.pendingRequests.length
               }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.pendingRequests
                 }
+
               />
 
             </CollapsibleCard>
+
+
+
 
 
 
 
             <CollapsibleCard
+
               title="Recently unfollowed"
+
               count={
                 analysis.recentlyUnfollowed.length
               }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.recentlyUnfollowed
                 }
+
               />
 
             </CollapsibleCard>
+
+
 
 
           </div>
 
         )
       }
+
 
 
     </div>
@@ -354,14 +480,27 @@ export default function Home() {
 
 
 
+
 function StatCard({
+
   title,
+
   value,
+
+  subtitle,
+
   icon
+
 }: {
+
   title:string;
+
   value:number;
+
+  subtitle?:string;
+
   icon:React.ReactNode;
+
 }) {
 
 
@@ -376,11 +515,17 @@ function StatCard({
     ">
 
 
+
       <div className="
         text-pink-400
       ">
+
         {icon}
+
       </div>
+
+
+
 
 
       <div className="
@@ -388,16 +533,47 @@ function StatCard({
         font-bold
         mt-2
       ">
+
         {value}
+
       </div>
+
+
+
 
 
       <div className="
         text-xs
         text-gray-400
       ">
+
         {title}
+
       </div>
+
+
+
+
+
+      {
+        subtitle &&
+        (
+
+          <div className="
+            text-[11px]
+            text-gray-500
+            mt-1
+          ">
+
+            {subtitle}
+
+          </div>
+
+        )
+      }
+
+
+
 
 
     </div>
