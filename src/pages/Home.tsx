@@ -4,7 +4,11 @@ import {
 } from "react";
 
 import {
-  Upload
+  Upload,
+  Users,
+  UserMinus,
+  Clock,
+  UserCheck
 } from "lucide-react";
 
 import {
@@ -12,10 +16,9 @@ import {
 } from "../hooks/useInstagramAnalyzer";
 
 import UserList from "../components/lists/UserList";
-import SettingRow from "../components/ui/SettingRow";
 
 
-type MainTab =
+type Tab =
   | "followers"
   | "following"
   | "notFollowingBack"
@@ -30,7 +33,6 @@ export default function Home() {
     useRef<HTMLInputElement>(null);
 
 
-
   const {
     analysis,
     loading,
@@ -40,40 +42,55 @@ export default function Home() {
 
 
 
-
   const [activeTab,setActiveTab] =
-    useState<MainTab>("followers");
-
-
-
-
-
-  function openPicker(){
-
-    fileInput.current?.click();
-
-  }
-
+    useState<Tab>("followers");
 
 
 
 
 
   async function handleFile(
-    event:React.ChangeEvent<HTMLInputElement>
+    e:React.ChangeEvent<HTMLInputElement>
   ){
 
     const file =
-      event.target.files?.[0];
+      e.target.files?.[0];
 
 
-    if(!file)
-      return;
-
-
-    await uploadZip(file);
+    if(file)
+      await uploadZip(file);
 
   }
+
+
+
+
+
+  function users(){
+
+
+    if(!analysis)
+      return [];
+
+
+
+    if(activeTab==="followers")
+      return analysis.followers;
+
+
+    if(activeTab==="following")
+      return analysis.following;
+
+
+    if(activeTab==="notFollowingBack")
+      return analysis.notFollowingBack;
+
+
+    return analysis.pendingRequests;
+
+  }
+
+
 
 
 
@@ -84,35 +101,42 @@ export default function Home() {
 
     {
       id:"followers",
-      title:"Followers",
+      label:"Followers",
       count:
-        analysis?.followersCount ?? 0
+        analysis?.followersCount ?? 0,
+      icon:
+        <Users size={18}/>
     },
 
 
     {
       id:"following",
-      title:"Following",
+      label:"Following",
       count:
-        analysis?.followingCount ?? 0
+        analysis?.followingCount ?? 0,
+      icon:
+        <UserCheck size={18}/>
     },
 
 
     {
       id:"notFollowingBack",
-      title:"Non ricambiano",
+      label:"Non ricambiano",
       count:
-        analysis?.notFollowingBackCount ?? 0
+        analysis?.notFollowingBackCount ?? 0,
+      icon:
+        <UserMinus size={18}/>
     },
 
 
     {
       id:"pending",
-      title:"Pending",
+      label:"Pending",
       count:
-        analysis?.pendingRequests.length ?? 0
+        analysis?.pendingRequests.length ?? 0,
+      icon:
+        <Clock size={18}/>
     }
-
 
   ] as const;
 
@@ -122,90 +146,49 @@ export default function Home() {
 
 
 
-  function currentUsers(){
-
-
-    if(!analysis)
-      return [];
-
-
-
-    switch(activeTab){
-
-
-      case "followers":
-
-        return analysis.followers;
-
-
-
-      case "following":
-
-        return analysis.following;
-
-
-
-      case "notFollowingBack":
-
-        return analysis.notFollowingBack;
-
-
-
-      case "pending":
-
-        return analysis.pendingRequests;
-
-
-    }
-
-  }
-
-
-
-
-
-
 
   return (
 
-    <div
+    <main
       className="
-        space-y-5
-        pb-10
+        min-h-screen
+        px-4
+        pb-8
       "
     >
 
 
 
-
-      <div>
+      <header
+        className="
+          pt-8
+          pb-5
+        "
+      >
 
         <h1
           className="
-            text-2xl
+            text-4xl
             font-bold
             tracking-tight
           "
         >
-
-          Instagram Insights
-
+          Insights
         </h1>
 
 
         <p
           className="
             text-sm
-            text-gray-500
+            text-gray-400
+            mt-1
           "
         >
-
-          Analisi followers e following
-
+          Instagram followers analysis
         </p>
 
 
-      </div>
+      </header>
 
 
 
@@ -215,146 +198,108 @@ export default function Home() {
 
 
 
-      <div
+      <section
         className="
-          relative
-          rounded-2xl
-          border
-          border-white/10
-          bg-white/5
-          backdrop-blur-xl
-          p-1
+          grid
+          grid-cols-2
+          gap-3
         "
       >
 
 
-
-        <div
-          className="
-            relative
-            grid
-            grid-cols-4
-            gap-1
-          "
-        >
+        {
+          tabs.map(tab => (
 
 
+            <button
 
-          <div
+              key={tab.id}
 
-            className="
-              absolute
-              top-0
-              bottom-0
-              rounded-xl
-              bg-white/15
-              transition-all
-              duration-300
-            "
+              onClick={() =>
+                setActiveTab(tab.id)
+              }
 
-            style={{
+              className={`
+                rounded-2xl
+                p-4
+                text-left
+                border
+                transition-all
+                duration-300
 
-              width:
-                "calc(25% - 4px)",
+                ${
+                  activeTab===tab.id
 
+                  ?
 
-              left:
+                  "
+                  bg-gradient-to-br
+                  from-pink-500
+                  via-purple-500
+                  to-orange-400
+                  border-transparent
+                  shadow-lg
+                  "
 
-                activeTab === "followers"
-                ? "2px"
+                  :
 
-                :
+                  "
+                  bg-white/5
+                  border-white/10
+                  "
 
-                activeTab === "following"
-                ? "25%"
-
-                :
-
-                activeTab === "notFollowingBack"
-                ? "50%"
-
-                :
-
-                "75%"
-
-            }}
-
-          />
-
-
-
-
-
-
-
-          {
-            tabs.map(tab=>(
-
-
-              <button
-
-                key={tab.id}
-
-                onClick={() =>
-                  setActiveTab(tab.id)
                 }
 
+              `}
 
+            >
+
+              <div
                 className="
-                  relative
-                  z-10
-                  rounded-xl
-                  py-3
-                  text-[11px]
+                  mb-3
                 "
-
               >
 
+                {tab.icon}
 
-                <div
-                  className={`
-                    ${
-                      activeTab===tab.id
-                      ?
-                      "text-white"
-                      :
-                      "text-gray-400"
-                    }
-                  `}
-                >
-
-                  {tab.title}
-
-                </div>
+              </div>
 
 
 
-                <div
-                  className="
-                    mt-1
-                    text-[10px]
-                    opacity-70
-                  "
-                >
+              <div
+                className="
+                  text-sm
+                  font-semibold
+                "
+              >
 
-                  {tab.count}
+                {tab.label}
 
-                </div>
-
-
-
-              </button>
-
-
-            ))
-          }
+              </div>
 
 
 
-        </div>
+              <div
+                className="
+                  text-xs
+                  opacity-70
+                  mt-1
+                "
+              >
+
+                {tab.count}
+
+              </div>
 
 
-      </div>
+            </button>
+
+
+          ))
+        }
+
+
+      </section>
 
 
 
@@ -364,20 +309,15 @@ export default function Home() {
 
 
 
-      <div
-
-        key={activeTab}
-
+      <section
         className="
-          rounded-2xl
+          mt-5
+          rounded-3xl
           border
           border-white/10
           bg-white/5
-          backdrop-blur-xl
-          p-4
-          animate-ios-in
+          overflow-hidden
         "
-
       >
 
 
@@ -386,13 +326,13 @@ export default function Home() {
           title=""
 
           users={
-            currentUsers()
+            users()
           }
 
         />
 
 
-      </div>
+      </section>
 
 
 
@@ -402,75 +342,64 @@ export default function Home() {
 
 
 
-      <div
-
+      <section
         className="
+          mt-5
           rounded-2xl
           border
           border-white/10
           bg-white/[0.03]
-          backdrop-blur-xl
-          p-2
+          p-3
         "
-
       >
-
 
 
         <p
           className="
-            px-3
-            py-2
-            text-[11px]
-            uppercase
-            tracking-wide
+            text-xs
             text-gray-500
+            mb-2
+            px-2
           "
         >
-
-          Secondari
-
+          Altro
         </p>
 
 
 
+        <div
+          className="
+            text-sm
+            text-gray-300
+            space-y-3
+          "
+        >
 
-        <SettingRow
-
-          title="Possibili inattivi"
-
-          count={
-            analysis?.inactiveCount ?? 0
-          }
-
-        />
-
-
-
-        <SettingRow
-
-          title="Richieste ricevute"
-
-          count={
-            analysis?.receivedRequests.length ?? 0
-          }
-
-        />
+          <div>
+            Possibili inattivi:
+            {" "}
+            {analysis?.inactiveCount ?? 0}
+          </div>
 
 
-
-        <SettingRow
-
-          title="Recently unfollowed"
-
-          count={
-            analysis?.recentlyUnfollowed.length ?? 0
-          }
-
-        />
+          <div>
+            Richieste ricevute:
+            {" "}
+            {analysis?.receivedRequests.length ?? 0}
+          </div>
 
 
-      </div>
+          <div>
+            Recently unfollowed:
+            {" "}
+            {analysis?.recentlyUnfollowed.length ?? 0}
+          </div>
+
+
+        </div>
+
+
+      </section>
 
 
 
@@ -480,19 +409,11 @@ export default function Home() {
 
 
 
-      <div
-
+      <section
         className="
-          rounded-2xl
-          border
-          border-white/10
-          bg-white/5
-          backdrop-blur-xl
-          p-4
+          mt-5
         "
-
       >
-
 
         <input
 
@@ -510,26 +431,24 @@ export default function Home() {
 
 
 
-
         <button
 
-          onClick={openPicker}
+          onClick={() =>
+            fileInput.current?.click()
+          }
 
           className="
             w-full
-            rounded-xl
-            py-3
+            rounded-2xl
+            py-4
+            font-semibold
             bg-gradient-to-r
             from-purple-500
             via-pink-500
             to-orange-400
-            font-semibold
-            active:scale-95
-            transition
           "
 
         >
-
 
           <Upload
             size={18}
@@ -539,7 +458,6 @@ export default function Home() {
             "
           />
 
-
           {
             loading
             ?
@@ -548,10 +466,7 @@ export default function Home() {
             "Carica ZIP Instagram"
           }
 
-
         </button>
-
-
 
 
         {
@@ -559,25 +474,22 @@ export default function Home() {
 
           <p
             className="
-              mt-3
-              text-sm
               text-red-400
+              text-sm
+              mt-3
             "
           >
-
             {error}
-
           </p>
 
         }
 
 
-
-      </div>
-
+      </section>
 
 
-    </div>
+
+    </main>
 
   );
 
