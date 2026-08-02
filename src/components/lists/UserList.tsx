@@ -10,99 +10,110 @@ interface Props {
 
 
 export default function UserList({
-  title,
   users
 }: Props) {
+
+
+  if (users.length === 0) {
+
+    return (
+      <p className="
+        text-sm
+        text-gray-500
+      ">
+        Nessun utente trovato
+      </p>
+    );
+
+  }
+
 
 
   return (
 
     <div className="
-      rounded-xl
-      border
-      border-white/10
-      bg-white/5
-      p-4
+      space-y-1
+      max-h-80
+      overflow-y-auto
     ">
 
 
-      <h3 className="
-        text-lg
-        font-semibold
-        mb-4
-      ">
-        {title}
+      {
+        users.map(user => (
 
-        <span className="
-          text-gray-400
-          ml-2
-          text-sm
-        ">
-          ({users.length})
-        </span>
-
-      </h3>
-
-
-
-      <div className="
-        space-y-2
-        max-h-96
-        overflow-auto
-      ">
+          <a
+            key={user.username}
+            href={user.profileUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="
+              flex
+              items-center
+              justify-between
+              rounded-lg
+              px-2
+              py-2
+              hover:bg-white/10
+              transition
+            "
+          >
 
 
-        {
-          users.map(user => (
-
-            <a
-              key={user.username}
-              href={user.profileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="
-                flex
-                justify-between
-                items-center
-                p-2
-                rounded-lg
-                hover:bg-white/10
-                transition
-              "
-            >
-
-              <span>
-                @{user.username}
-              </span>
+            <span className="
+              text-sm
+              font-medium
+            ">
+              @{user.username}
+            </span>
 
 
-              {
-                user.followedAt &&
-                (
-                  <span className="
-                    text-xs
-                    text-gray-400
-                  ">
-                    {
+
+            {
+              user.followedAt &&
+              (
+
+                <span className="
+                  text-xs
+                  text-gray-500
+                  ml-2
+                ">
+                  {
+                    formatDate(
                       user.followedAt
-                        .toLocaleDateString()
-                    }
-                  </span>
-                )
-              }
+                    )
+                  }
+                </span>
+
+              )
+            }
 
 
-            </a>
+          </a>
 
-          ))
-        }
-
-
-      </div>
+        ))
+      }
 
 
     </div>
 
+  );
+
+}
+
+
+
+
+function formatDate(
+  date: Date
+) {
+
+  return date.toLocaleDateString(
+    "it-IT",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }
   );
 
 }
