@@ -11,7 +11,6 @@ import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
 
 import UserList from "../components/lists/UserList";
 import CollapsibleCard from "../components/ui/CollapsibleCard";
-import Badge from "../components/ui/Badge";
 
 
 export default function Home() {
@@ -104,11 +103,6 @@ export default function Home() {
           title="Following"
           value={
             analysis?.followingCount ?? 0
-          }
-          subtitle={
-            analysis
-              ? `${analysis.excludedCount} esclusi`
-              : ""
           }
           icon={
             <Users size={18}/>
@@ -262,38 +256,6 @@ export default function Home() {
 
             </CollapsibleCard>
 
-
-
-
-
-            <CollapsibleCard
-              title="Esclusi manualmente"
-              count={
-                analysis.excludedCount
-              }
-            >
-
-              <div className="
-                flex
-                justify-end
-                mb-3
-              ">
-
-                <Badge>
-                  esclusi dal conteggio Following
-                </Badge>
-
-              </div>
-
-
-              <UserList
-                title=""
-                users={
-                  analysis.excludedUsers
-                }
-              />
-
-            </CollapsibleCard>
 
 
 
@@ -456,8 +418,6 @@ function StatCard({
 
   value,
 
-  subtitle,
-
   icon
 
 }: {
@@ -465,8 +425,6 @@ function StatCard({
   title:string;
 
   value:number;
-
-  subtitle?:string;
 
   icon:React.ReactNode;
 
@@ -508,24 +466,6 @@ function StatCard({
       ">
         {title}
       </div>
-
-
-
-      {
-        subtitle &&
-        (
-
-          <div className="
-            text-[11px]
-            text-gray-500
-            mt-1
-          ">
-            {subtitle}
-          </div>
-
-        )
-      }
-
 
 
     </div>
