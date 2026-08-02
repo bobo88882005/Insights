@@ -1,180 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+body {
 
-
-
-:root {
-
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "SF Pro Text",
-    Arial,
-    sans-serif;
-
-  line-height: 1.5;
-
-  font-weight: 400;
-
-  color: #ffffff;
+  margin:0;
 
   background:
     radial-gradient(
       circle at top,
-      #1c1635 0%,
-      #09090f 35%,
-      #050507 100%
+      #1c1c1e,
+      #000
     );
-
-  font-synthesis: none;
-
-  text-rendering: optimizeLegibility;
-
-  -webkit-font-smoothing: antialiased;
-
-}
-
-
-
-
-
-html,
-body,
-#root {
-
-  margin:0;
-
-  width:100%;
-
-  min-height:100vh;
-
-}
-
-
-
-
-
-body {
 
   color:white;
 
-  background:
-
-    radial-gradient(
-      600px circle at 50% -100px,
-      rgba(236,72,153,0.18),
-      transparent 60%
-    ),
-
-    radial-gradient(
-      500px circle at 100% 20%,
-      rgba(168,85,247,0.12),
-      transparent 60%
-    ),
-
-    #050507;
-
-
-}
-
-
-
-
-
-* {
-
-  box-sizing:border-box;
-
-}
-
-
-
-
-
-button,
-input {
-
-  font-family:inherit;
-
-}
-
-
-
-
-
-button {
-
-  -webkit-tap-highlight-color:transparent;
-
-}
-
-
-
-
-
-::-webkit-scrollbar {
-
-  width:8px;
-
-}
-
-
-
-
-
-::-webkit-scrollbar-track {
-
-  background:transparent;
-
-}
-
-
-
-
-
-::-webkit-scrollbar-thumb {
-
-  background:rgba(255,255,255,0.15);
-
-  border-radius:999px;
-
-}
-
-
-
-
-
-.glass {
-
-  background:
-
-    rgba(255,255,255,0.06);
-
-  backdrop-filter:
-
-    blur(20px);
-
-  -webkit-backdrop-filter:
-
-    blur(20px);
-
-  border:
-
-    1px solid rgba(255,255,255,0.1);
-
-}
-
-
-
-
-
-.card-shadow {
-
-  box-shadow:
-
-    0 20px 50px rgba(0,0,0,0.35);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Segoe UI",
+    sans-serif;
 
 }
