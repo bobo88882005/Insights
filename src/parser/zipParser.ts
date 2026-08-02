@@ -41,6 +41,7 @@ function mergeUsers(
 
 
 
+
 function detectType(
   filename: string
 ):
@@ -70,8 +71,8 @@ null {
 
   if (
     name.includes("following")
-    ||
-    name.includes("relationships_following")
+    &&
+    !name.includes("followers")
   ) {
 
     return "following";
@@ -81,14 +82,9 @@ null {
 
 
 
+
   if (
-    name.includes("follow_requests")
-    &&
-    (
-      name.includes("sent")
-      ||
-      name.includes("outgoing")
-    )
+    name.includes("pending_follow_requests")
   ) {
 
     return "pending";
@@ -98,14 +94,11 @@ null {
 
 
 
+
   if (
-    name.includes("follow_requests")
-    &&
-    (
-      name.includes("received")
-      ||
-      name.includes("you")
-    )
+    name.includes("follow_requests_you")
+    ||
+    name.includes("received")
   ) {
 
     return "received";
@@ -115,10 +108,9 @@ null {
 
 
 
+
   if (
     name.includes("recently_unfollowed")
-    ||
-    name.includes("unfollowed")
   ) {
 
     return "recentlyUnfollowed";
@@ -130,6 +122,7 @@ null {
   return null;
 
 }
+
 
 
 
@@ -217,6 +210,7 @@ export async function readInstagramZip(
 
 
 
+
       if (
         lower.endsWith(".html")
       ) {
@@ -264,6 +258,9 @@ export async function readInstagramZip(
           );
 
       }
+
+
+
 
 
 
