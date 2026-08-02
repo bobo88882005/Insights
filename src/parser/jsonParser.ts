@@ -1,54 +1,101 @@
 import { InstagramUser } from "../types/instagram";
 
 
-function createUser(
-  username: string,
-  source: "followers" | "following",
-  timestamp?: number
-): InstagramUser | null {
+
+type InstagramSource =
+  | "followers"
+  | "following"
+  | "pending"
+  | "received"
+  | "recentlyUnfollowed";
 
 
-  const clean =
-    username
+
+
+
+function cleanUsername(
+  value: string
+): string | null {
+
+
+  const username =
+    value
       .trim()
       .toLowerCase()
-      .replace("@", "");
+      .replace(/^@/, "")
+      .replace(/^https?:\/\/(www\.)?instagram\.com\//, "")
+      .replace(/[\/?#].*$/, "");
 
 
 
   if (
-    !/^[a-z0-9._]+$/.test(clean)
+    !/^[a-z0-9._]+$/.test(username)
   ) {
+
     return null;
+
   }
 
 
 
-  return {
+  if (
+    username.startsWith("__deleted__")
+  ) {
 
-    username: clean,
+    return null;
 
-    profileUrl:
-      `https://www.instagram.com/${clean}/`,
+  }
 
-    followedAt:
-      timestamp
-        ? new Date(timestamp * 1000)
-        : null,
 
-    source
 
-  };
+  return username;
 
 }
 
 
 
 
+
+
+
+function extractTimestamp(
+  item: any
+): Date | null {
+
+
+  const timestamp =
+    item?.string_list_data?.[0]?.timestamp;
+
+
+
+  if (
+    typeof timestamp !== "number"
+  ) {
+
+    return null;
+
+  }
+
+
+
+  return new Date(
+    timestamp * 1000
+  );
+
+}
+
+
+
+
+
+
+
+
 export function extractUsersFromJSON(
   json: any,
-  source: "followers" | "following"
+  source: InstagramSource
 ): InstagramUser[] {
+
 
 
   const users =
@@ -56,21 +103,18 @@ export function extractUsersFromJSON(
 
 
 
-  function scan(
-    value:any
+
+
+
+
+  function processItem(
+    item: any
   ) {
 
 
-    if (!value)
-      return;
-
-
-
-    if (Array.isArray(value)) {
-
-      value.forEach(
-        item => scan(item)
-      );
+    if (
+      !item
+    ) {
 
       return;
 
@@ -79,62 +123,141 @@ export function extractUsersFromJSON(
 
 
 
+    let username: string | null =
+      null;
+
+
+
+
     if (
-      typeof value === "object"
+      typeof item.title === "string"
     ) {
+
+      username =
+        cleanUsername(
+          item.title
+        );
+
+    }
+
+
+
+
+
+    if (
+      !username &&
+      Array.isArray(
+        item.string_list_data
+      )
+    ) {
+
+
+      const value =
+        item.string_list_data[0]?.value;
 
 
 
       if (
-        value.string_list_data &&
-        Array.isArray(
-          value.string_list_data
-        )
+        typeof value === "string"
       ) {
 
-
-        value.string_list_data.forEach(
-          (item:any)=>{
-
-
-            if (
-              item.value
-            ) {
-
-
-              const user =
-                createUser(
-                  item.value,
-                  source,
-                  item.timestamp
-                );
-
-
-
-              if (user) {
-
-                users.set(
-                  user.username,
-                  user
-                );
-
-              }
-
-            }
-
-
-          }
-        );
+        username =
+          cleanUsername(
+            value
+          );
 
       }
 
+
+    }
+
+
+
+
+
+
+    if (
+      username
+    ) {
+
+
+      users.set(
+        username,
+        {
+
+          username,
+
+
+          profileUrl:
+            `https://www.instagram.com/${username}/`,
+
+
+          followedAt:
+            extractTimestamp(
+              item
+            ),
+
+
+          source
+
+        }
+      );
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+  function walk(
+    value: any
+  ) {
+
+
+    if (
+      Array.isArray(value)
+    ) {
+
+
+      value.forEach(
+        item =>
+          walk(item)
+      );
+
+
+      return;
+
+    }
+
+
+
+
+
+
+    if (
+      typeof value === "object"
+      &&
+      value !== null
+    ) {
+
+
+      processItem(
+        value
+      );
 
 
 
       Object.values(value)
         .forEach(
           child =>
-            scan(child)
+            walk(child)
         );
 
 
@@ -145,7 +268,16 @@ export function extractUsersFromJSON(
 
 
 
-  scan(json);
+
+
+
+
+  walk(
+    json
+  );
+
+
+
 
 
 
