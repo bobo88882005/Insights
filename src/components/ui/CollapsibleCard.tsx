@@ -9,16 +9,25 @@ import {
 
 
 interface Props {
+
   title: string;
+
   count: number;
+
   children: ReactNode;
+
 }
 
 
+
 export default function CollapsibleCard({
+
   title,
+
   count,
+
   children
+
 }: Props) {
 
 
@@ -30,66 +39,139 @@ export default function CollapsibleCard({
   return (
 
     <div className="
-      rounded-xl
+      overflow-hidden
+      rounded-3xl
       border
       border-white/10
-      bg-white/5
+      bg-white/[0.06]
+      backdrop-blur-xl
+      shadow-lg
+      transition-all
+      duration-300
     ">
 
 
+
       <button
+
         onClick={() => setOpen(!open)}
+
         className="
           w-full
           flex
-          justify-between
           items-center
-          p-4
+          justify-between
+          px-5
+          py-4
+          active:scale-[0.98]
+          transition
         "
+
       >
 
-        <div>
+
+
+        <div className="
+          flex
+          items-center
+          gap-3
+        ">
+
+
+
+          <div className="
+            rounded-full
+            bg-white/10
+            px-3
+            py-1
+            text-xs
+            text-gray-300
+          ">
+
+            {count}
+
+          </div>
+
+
 
           <span className="
             font-semibold
+            text-base
           ">
+
             {title}
+
           </span>
 
-          <span className="
-            text-gray-400
-            text-sm
-            ml-2
-          ">
-            ({count})
-          </span>
+
 
         </div>
 
 
+
+
+
         <ChevronDown
+
+          size={20}
+
           className={`
-            transition
+            text-gray-400
+            transition-transform
+            duration-300
             ${open ? "rotate-180" : ""}
           `}
+
         />
+
+
 
       </button>
 
 
 
-      {
-        open &&
-        (
+
+
+
+      <div
+
+        className={`
+          grid
+          transition-all
+          duration-300
+          ease-in-out
+          ${
+            open
+              ? "grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0"
+          }
+        `}
+
+      >
+
+        <div className="
+          overflow-hidden
+        ">
+
+
           <div className="
             border-t
             border-white/10
-            p-4
+            px-5
+            py-4
           ">
+
             {children}
+
           </div>
-        )
-      }
+
+
+
+        </div>
+
+
+      </div>
+
 
 
     </div>
