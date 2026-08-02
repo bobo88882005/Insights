@@ -11,11 +11,11 @@ import SearchInput from "../ui/SearchInput";
 
 interface Props {
 
-  title: string;
+  title:string;
 
-  users: InstagramUser[];
+  users:InstagramUser[];
 
-  showDate?: boolean;
+  showDate?:boolean;
 
 }
 
@@ -25,17 +25,16 @@ export default function UserList({
 
   users,
 
-  showDate = false
-
-}: Props) {
+}:Props){
 
 
-  const [search, setSearch] =
+
+  const [search,setSearch] =
     useState("");
 
 
 
-  const filteredUsers =
+  const filtered =
     users.filter(
       user =>
         user.username
@@ -47,160 +46,145 @@ export default function UserList({
 
 
 
+
+
   return (
 
-    <div>
+    <div
+      className="
+        p-3
+      "
+    >
+
 
 
       {
-        users.length > 8 &&
+        users.length > 10 &&
 
         <div className="mb-3">
 
           <SearchInput
+
             value={search}
+
             onChange={setSearch}
+
           />
 
         </div>
-      }
-
-
-
-
-      {
-        filteredUsers.length === 0
-
-        ?
-
-        <div
-          className="
-            py-8
-            text-center
-            text-sm
-            text-gray-500
-          "
-        >
-          Nessun utente trovato
-        </div>
-
-
-        :
-
-
-        <div
-          className="
-            rounded-2xl
-            overflow-hidden
-            border
-            border-white/10
-            bg-black/20
-          "
-        >
-
-
-          {
-            filteredUsers.map(
-              (user, index) => (
-
-                <a
-
-                  key={user.username}
-
-                  href={user.profileUrl}
-
-                  target="_blank"
-
-                  rel="noreferrer"
-
-                  className={
-
-                    "flex items-center justify-between px-4 py-3 transition active:bg-white/10 " +
-
-                    (
-                      index !== filteredUsers.length - 1
-                      ? "border-b border-white/5"
-                      : ""
-                    )
-
-                  }
-
-                >
-
-
-                  <div>
-
-
-                    <div
-                      className="
-                        text-[15px]
-                        font-medium
-                        text-white
-                      "
-                    >
-
-                      @{user.username}
-
-                    </div>
-
-
-
-
-                    {
-                      showDate &&
-                      user.followedAt &&
-
-                      <div
-                        className="
-                          mt-1
-                          text-xs
-                          text-gray-500
-                        "
-                      >
-
-                        Seguito il{" "}
-
-                        {
-                          user.followedAt.toLocaleDateString(
-                            "it-IT",
-                            {
-                              day:"2-digit",
-                              month:"2-digit",
-                              year:"numeric"
-                            }
-                          )
-                        }
-
-                      </div>
-
-                    }
-
-
-                  </div>
-
-
-
-
-                  <div
-                    className="
-                      text-gray-600
-                      text-lg
-                    "
-                  >
-                    ›
-                  </div>
-
-
-                </a>
-
-              )
-            )
-          }
-
-
-        </div>
 
       }
+
+
+
+
+
+
+      <div
+        className="
+          max-h-[420px]
+          overflow-y-auto
+          divide-y
+          divide-white/10
+        "
+      >
+
+
+
+        {
+          filtered.length === 0
+
+          ?
+
+          (
+
+            <div
+              className="
+                py-10
+                text-center
+                text-sm
+                text-gray-500
+              "
+            >
+
+              Nessun utente
+
+            </div>
+
+          )
+
+
+          :
+
+
+          filtered.map(user => (
+
+            <a
+
+              key={
+                user.username
+              }
+
+              href={
+                user.profileUrl
+              }
+
+              target="_blank"
+
+              rel="noreferrer"
+
+              className="
+                flex
+                items-center
+                justify-between
+                py-3
+                px-2
+                transition
+                active:bg-white/10
+              "
+
+            >
+
+
+
+              <span
+                className="
+                  text-[15px]
+                  font-medium
+                  text-white
+                "
+              >
+
+                @{user.username}
+
+              </span>
+
+
+
+
+              <span
+                className="
+                  text-gray-500
+                  text-xl
+                "
+              >
+
+                ›
+
+              </span>
+
+
+
+            </a>
+
+
+          ))
+
+        }
+
+
+
+      </div>
 
 
     </div>
