@@ -1,13 +1,7 @@
-import { InstagramUser } from "../types/instagram";
-
-
-
-type InstagramSource =
-  | "followers"
-  | "following"
-  | "pending"
-  | "received"
-  | "recentlyUnfollowed";
+import {
+  InstagramUser,
+  InstagramSource
+} from "../types/instagram";
 
 
 
@@ -123,8 +117,10 @@ export function extractUsersFromJSON(
 
 
 
+
     let username: string | null =
       null;
+
 
 
 
@@ -139,6 +135,7 @@ export function extractUsersFromJSON(
         );
 
     }
+
 
 
 
@@ -192,10 +189,12 @@ export function extractUsersFromJSON(
             `https://www.instagram.com/${username}/`,
 
 
+
           followedAt:
             extractTimestamp(
               item
             ),
+
 
 
           source
@@ -207,8 +206,9 @@ export function extractUsersFromJSON(
     }
 
 
-
   }
+
+
 
 
 
