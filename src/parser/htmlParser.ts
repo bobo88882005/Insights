@@ -2,29 +2,30 @@ import { InstagramUser } from "../types/instagram";
 
 
 function cleanUsername(
-  value:string
+  value: string
 ): string | null {
 
   const username =
     value
       .trim()
       .toLowerCase()
-      .replace("@","")
-      .trim();
+      .replace(/^@/, "");
 
 
-  if(
-    !/^[a-z0-9._]+$/.test(username)
-  ){
+  if (!username)
     return null;
-  }
 
 
-  if(
+  if (
     username.startsWith("__deleted__")
-  ){
+  )
     return null;
-  }
+
+
+  if (
+    !/^[a-z0-9._]+$/.test(username)
+  )
+    return null;
 
 
   return username;
@@ -35,7 +36,7 @@ function cleanUsername(
 
 
 function extractTimestamp(
-  text:string
+  text: string
 ): Date | null {
 
 
@@ -45,52 +46,76 @@ function extractTimestamp(
     );
 
 
-  if(match){
-
-    const date =
-      new Date(match[1]);
-
-    if(!isNaN(date.getTime()))
-      return date;
-
-  }
+  if (!match)
+    return null;
 
 
-  return null;
+  const date =
+    new Date(
+      match[1]
+    );
+
+
+  if(
+    isNaN(
+      date.getTime()
+    )
+  )
+    return null;
+
+
+  return date;
 
 }
 
 
 
 
-
 function addUser(
-  map:Map<string,InstagramUser>,
-  username:string,
+  users: Map<string, InstagramUser>,
+
+  username: string,
+
   source:
     "followers" |
     "following"
-){
+) {
+
 
   const clean =
-    cleanUsername(username);
+    cleanUsername(
+      username
+    );
 
 
   if(!clean)
     return;
 
 
-  map.set(
+  if(
+    users.has(clean)
+  )
+    return;
+
+
+
+  users.set(
     clean,
     {
-      username:clean,
+
+      username: clean,
+
 
       profileUrl:
         `https://www.instagram.com/${clean}/`,
 
-      followedAt:null,
+
+      followedAt:
+        null,
+
 
       source
+
     }
   );
 
@@ -101,33 +126,34 @@ function addUser(
 
 
 export function extractUsersFromHTML(
-  html:string,
+  html: string,
 
   source:
     "followers" |
     "following"
-):InstagramUser[]{
+): InstagramUser[] {
 
 
 
   const users =
-    new Map<string,InstagramUser>();
+    new Map<string, InstagramUser>();
 
 
 
   const decoded =
     html
-      .replace(/&quot;/g,'"')
-      .replace(/&#x27;/g,"'")
-      .replace(/&amp;/g,"&");
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&amp;/g, "&");
 
 
 
 
 
   /*
-    Metodo 1:
-    link Instagram
+    1) Vecchio formato Instagram
+
+    <a href="https://instagram.com/user">
   */
 
 
@@ -140,21 +166,25 @@ export function extractUsersFromHTML(
 
   if(links){
 
-    links.forEach(link=>{
 
-      addUser(
-        users,
-
-        link.replace(
-          /instagram\.com\//i,
-          ""
-        ),
-
-        source
-      );
+    links.forEach(
+      link => {
 
 
-    });
+        addUser(
+          users,
+
+          link.replace(
+            /instagram\.com\//i,
+            ""
+          ),
+
+          source
+        );
+
+
+      }
+    );
 
   }
 
@@ -164,16 +194,17 @@ export function extractUsersFromHTML(
 
 
 
-  /*
-    Metodo 2:
-    nuovi export Instagram 2026
 
-    Nome utente
-    username
+  /*
+    2) Nuovo formato Instagram
+
+    <td>Nome utente</td>
+    <td>username</td>
+
   */
 
 
-  const usernameBlocks =
+  const usernameMatches =
     decoded.matchAll(
       /Nome utente<\/td>\s*<td[^>]*>(.*?)<\/td>/gis
     );
@@ -181,19 +212,25 @@ export function extractUsersFromHTML(
 
 
   for(
-    const block of usernameBlocks
+    const match of usernameMatches
   ){
 
+
     const username =
-      block[1]
-        .replace(/<[^>]+>/g,"")
+      match[1]
+        .replace(
+          /<[^>]+>/g,
+          ""
+        )
         .trim();
 
 
 
     addUser(
       users,
+
       username,
+
       source
     );
 
@@ -205,9 +242,10 @@ export function extractUsersFromHTML(
 
 
 
+
   /*
-    Metodo 3:
-    vecchi export con h2
+    3) Formato con h2
+
   */
 
 
@@ -220,26 +258,35 @@ export function extractUsersFromHTML(
 
   if(h2){
 
-    h2.forEach(item=>{
+
+    h2.forEach(
+      item => {
 
 
-      const username =
-        item
-          .replace(/<[^>]+>/g,"")
-          .trim();
+        const username =
+          item
+            .replace(
+              /<[^>]+>/g,
+              ""
+            )
+            .trim();
 
 
 
-      addUser(
-        users,
-        username,
-        source
-      );
+        addUser(
+          users,
+
+          username,
+
+          source
+        );
 
 
-    });
+      }
+    );
 
   }
+
 
 
 
