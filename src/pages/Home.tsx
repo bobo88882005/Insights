@@ -4,7 +4,10 @@ import {
   Users,
   UserMinus,
   UserX,
-  Upload
+  Upload,
+  UserCheck,
+  Clock,
+  UserRoundX
 } from "lucide-react";
 
 import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
@@ -57,14 +60,24 @@ export default function Home() {
 
   return (
 
-    <div className="space-y-5">
+    <div className="
+      max-w-xl
+      mx-auto
+      px-4
+      pb-10
+      space-y-6
+    ">
 
 
-      <div>
+
+      <header className="
+        pt-6
+      ">
 
         <h1 className="
-          text-2xl
+          text-3xl
           font-bold
+          tracking-tight
         ">
           Instagram Insights
         </h1>
@@ -72,12 +85,14 @@ export default function Home() {
 
         <p className="
           text-gray-400
-          text-sm
+          mt-1
         ">
-          Analisi followers e following
+          Analisi intelligente del profilo
         </p>
 
-      </div>
+
+      </header>
+
 
 
 
@@ -88,58 +103,67 @@ export default function Home() {
         gap-3
       ">
 
+
         <StatCard
+
           title="Followers"
+
           value={
             analysis?.followersCount ?? 0
           }
+
           icon={
-            <Users size={18}/>
+            <Users />
           }
+
         />
 
 
+
         <StatCard
+
           title="Following"
+
           value={
             analysis?.followingCount ?? 0
           }
+
           icon={
-            <Users size={18}/>
+            <UserCheck />
           }
+
         />
 
-      </div>
-
-
-
-
-      <div className="
-        grid
-        grid-cols-2
-        gap-3
-      ">
 
 
         <StatCard
+
           title="Non ricambiano"
+
           value={
             analysis?.notFollowingBackCount ?? 0
           }
+
           icon={
-            <UserMinus size={18}/>
+            <UserMinus />
           }
+
         />
 
 
+
         <StatCard
+
           title="Possibili inattivi"
+
           value={
             analysis?.inactiveCount ?? 0
           }
+
           icon={
-            <UserX size={18}/>
+            <UserX />
           }
+
         />
 
 
@@ -150,12 +174,14 @@ export default function Home() {
 
 
       <div className="
-        rounded-xl
+        rounded-3xl
+        bg-white/5
         border
         border-white/10
-        bg-white/5
-        p-4
+        backdrop-blur-xl
+        p-5
       ">
+
 
 
         <input
@@ -173,34 +199,38 @@ export default function Home() {
         />
 
 
+
         <button
 
           onClick={openFilePicker}
 
           className="
             w-full
+            rounded-2xl
+            py-4
             flex
-            justify-center
             items-center
-            gap-2
-            rounded-full
-            py-3
+            justify-center
+            gap-3
+            font-semibold
             bg-gradient-to-r
             from-purple-500
             via-pink-500
             to-orange-400
-            font-semibold
+            shadow-lg
+            active:scale-95
+            transition
           "
 
         >
 
-          <Upload size={18}/>
+          <Upload size={20}/>
 
 
           {
             loading
-              ? "Analisi..."
-              : "Carica ZIP Instagram"
+              ? "Analisi in corso..."
+              : "Importa archivio Instagram"
           }
 
 
@@ -215,7 +245,7 @@ export default function Home() {
             <p className="
               text-red-400
               text-sm
-              mt-3
+              mt-4
             ">
               {error}
             </p>
@@ -236,25 +266,39 @@ export default function Home() {
         analysis &&
         (
 
-          <div className="space-y-3">
+          <div className="
+            space-y-4
+          ">
 
 
 
-            <CollapsibleCard
+
+
+            <Section
+
               title="Non ricambiano"
+
               count={
                 analysis.notFollowingBackCount
               }
+
+              icon={
+                <UserMinus size={18}/>
+              }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.notFollowingBack
                 }
+
               />
 
-            </CollapsibleCard>
+            </Section>
 
 
 
@@ -262,21 +306,32 @@ export default function Home() {
 
 
 
-            <CollapsibleCard
+
+            <Section
+
               title="Possibili inattivi"
+
               count={
                 analysis.inactiveCount
               }
+
+              icon={
+                <UserX size={18}/>
+              }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.possibleInactive
                 }
+
               />
 
-            </CollapsibleCard>
+            </Section>
 
 
 
@@ -284,22 +339,35 @@ export default function Home() {
 
 
 
-            <CollapsibleCard
+
+
+            <Section
+
               title="Followers"
+
               count={
                 analysis.followersCount
               }
+
+              icon={
+                <Users size={18}/>
+              }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.followers
                 }
+
                 showDate
+
               />
 
-            </CollapsibleCard>
+            </Section>
 
 
 
@@ -308,22 +376,34 @@ export default function Home() {
 
 
 
-            <CollapsibleCard
+
+            <Section
+
               title="Following"
+
               count={
                 analysis.followingCount
               }
+
+              icon={
+                <UserCheck size={18}/>
+              }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.following
                 }
+
                 showDate
+
               />
 
-            </CollapsibleCard>
+            </Section>
 
 
 
@@ -331,21 +411,33 @@ export default function Home() {
 
 
 
-            <CollapsibleCard
+
+
+            <Section
+
               title="Richieste ricevute"
+
               count={
                 analysis.receivedRequests.length
               }
+
+              icon={
+                <Clock size={18}/>
+              }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.receivedRequests
                 }
+
               />
 
-            </CollapsibleCard>
+            </Section>
 
 
 
@@ -353,21 +445,33 @@ export default function Home() {
 
 
 
-            <CollapsibleCard
+
+
+            <Section
+
               title="Pending requests"
+
               count={
                 analysis.pendingRequests.length
               }
+
+              icon={
+                <Clock size={18}/>
+              }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.pendingRequests
                 }
+
               />
 
-            </CollapsibleCard>
+            </Section>
 
 
 
@@ -375,27 +479,42 @@ export default function Home() {
 
 
 
-            <CollapsibleCard
+
+
+            <Section
+
               title="Recently unfollowed"
+
               count={
                 analysis.recentlyUnfollowed.length
               }
+
+              icon={
+                <UserRoundX size={18}/>
+              }
+
             >
 
               <UserList
+
                 title=""
+
                 users={
                   analysis.recentlyUnfollowed
                 }
+
               />
 
-            </CollapsibleCard>
+            </Section>
+
+
 
 
 
           </div>
 
         )
+
       }
 
 
@@ -412,6 +531,144 @@ export default function Home() {
 
 
 
+function Section({
+
+  title,
+
+  count,
+
+  icon,
+
+  children
+
+}:{
+
+  title:string;
+
+  count:number;
+
+  icon:React.ReactNode;
+
+  children:React.ReactNode;
+
+}) {
+
+
+  return (
+
+    <div className="
+
+      rounded-3xl
+
+      overflow-hidden
+
+      bg-white/5
+
+      border
+
+      border-white/10
+
+      backdrop-blur-xl
+
+    ">
+
+
+      <div className="
+
+        px-5
+
+        py-4
+
+        flex
+
+        items-center
+
+        justify-between
+
+      ">
+
+
+        <div className="
+
+          flex
+
+          items-center
+
+          gap-3
+
+        ">
+
+          <div className="
+
+            text-pink-400
+
+          ">
+
+            {icon}
+
+          </div>
+
+
+          <span className="
+
+            font-semibold
+
+          ">
+
+            {title}
+
+          </span>
+
+
+        </div>
+
+
+
+        <span className="
+
+          text-sm
+
+          text-gray-400
+
+        ">
+
+          {count}
+
+        </span>
+
+
+
+      </div>
+
+
+
+      <CollapsibleCard
+
+        title=""
+
+        count={0}
+
+      >
+
+        {children}
+
+      </CollapsibleCard>
+
+
+    </div>
+
+  );
+
+}
+
+
+
+
+
+
+
+
+
 function StatCard({
 
   title,
@@ -420,7 +677,7 @@ function StatCard({
 
   icon
 
-}: {
+}:{
 
   title:string;
 
@@ -434,37 +691,60 @@ function StatCard({
   return (
 
     <div className="
-      rounded-xl
-      border
-      border-white/10
+
+      rounded-3xl
+
+      p-4
+
       bg-white/5
-      p-3
+
+      border
+
+      border-white/10
+
+      backdrop-blur-xl
+
     ">
 
 
       <div className="
+
         text-pink-400
+
       ">
+
         {icon}
+
       </div>
 
 
 
       <div className="
-        text-xl
+
+        text-3xl
+
         font-bold
-        mt-2
+
+        mt-3
+
       ">
+
         {value}
+
       </div>
 
 
 
       <div className="
-        text-xs
+
+        text-sm
+
         text-gray-400
+
       ">
+
         {title}
+
       </div>
 
 
