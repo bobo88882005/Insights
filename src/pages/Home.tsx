@@ -11,6 +11,7 @@ import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
 
 import UserList from "../components/lists/UserList";
 import CollapsibleCard from "../components/ui/CollapsibleCard";
+import Badge from "../components/ui/Badge";
 
 
 export default function Home() {
@@ -29,7 +30,9 @@ export default function Home() {
 
 
   function openFilePicker() {
+
     fileInput.current?.click();
+
   }
 
 
@@ -52,11 +55,10 @@ export default function Home() {
 
 
 
+
   return (
 
-    <div className="
-      space-y-5
-    ">
+    <div className="space-y-5">
 
 
       <div>
@@ -81,6 +83,7 @@ export default function Home() {
 
 
 
+
       <div className="
         grid
         grid-cols-2
@@ -89,39 +92,30 @@ export default function Home() {
 
 
         <StatCard
-
           title="Followers"
-
           value={
             analysis?.followersCount ?? 0
           }
-
           icon={
             <Users size={18}/>
           }
-
         />
 
 
 
         <StatCard
-
           title="Following"
-
           value={
             analysis?.followingCount ?? 0
           }
-
           subtitle={
             analysis
               ? `${analysis.excludedCount} esclusi`
               : ""
           }
-
           icon={
             <Users size={18}/>
           }
-
         />
 
 
@@ -139,37 +133,30 @@ export default function Home() {
 
 
         <StatCard
-
           title="Non ricambiano"
-
           value={
             analysis?.notFollowingBackCount ?? 0
           }
-
           icon={
             <UserMinus size={18}/>
           }
-
         />
 
 
 
         <StatCard
-
           title="Possibili inattivi"
-
           value={
             analysis?.inactiveCount ?? 0
           }
-
           icon={
             <UserX size={18}/>
           }
-
         />
 
 
       </div>
+
 
 
 
@@ -246,9 +233,7 @@ export default function Home() {
               text-sm
               mt-3
             ">
-
               {error}
-
             </p>
 
           )
@@ -263,13 +248,14 @@ export default function Home() {
 
 
 
+
       {
         analysis &&
         (
 
-          <div className="
-            space-y-3
-          ">
+          <div className="space-y-3">
+
+
 
 
 
@@ -294,6 +280,53 @@ export default function Home() {
               />
 
             </CollapsibleCard>
+
+
+
+
+
+
+
+
+            <CollapsibleCard
+
+              title="Esclusi manualmente"
+
+              count={
+                analysis.excludedCount
+              }
+
+            >
+
+
+              <div className="
+                flex
+                justify-end
+                mb-3
+              ">
+
+                <Badge>
+                  esclusi dal conteggio Following
+                </Badge>
+
+
+              </div>
+
+
+
+              <UserList
+
+                title=""
+
+                users={
+                  analysis.excludedUsers
+                }
+
+              />
+
+            </CollapsibleCard>
+
+
 
 
 
@@ -327,6 +360,8 @@ export default function Home() {
 
 
 
+
+
             <CollapsibleCard
 
               title="Followers"
@@ -348,6 +383,7 @@ export default function Home() {
               />
 
             </CollapsibleCard>
+
 
 
 
@@ -383,6 +419,7 @@ export default function Home() {
 
 
 
+
             <CollapsibleCard
 
               title="Richieste ricevute"
@@ -404,6 +441,7 @@ export default function Home() {
               />
 
             </CollapsibleCard>
+
 
 
 
@@ -439,6 +477,7 @@ export default function Home() {
 
 
 
+
             <CollapsibleCard
 
               title="Recently unfollowed"
@@ -463,12 +502,10 @@ export default function Home() {
 
 
 
-
           </div>
 
         )
       }
-
 
 
     </div>
@@ -476,6 +513,8 @@ export default function Home() {
   );
 
 }
+
+
 
 
 
@@ -515,16 +554,11 @@ function StatCard({
     ">
 
 
-
       <div className="
         text-pink-400
       ">
-
         {icon}
-
       </div>
-
-
 
 
 
@@ -533,12 +567,8 @@ function StatCard({
         font-bold
         mt-2
       ">
-
         {value}
-
       </div>
-
-
 
 
 
@@ -546,34 +576,23 @@ function StatCard({
         text-xs
         text-gray-400
       ">
-
         {title}
-
       </div>
-
-
 
 
 
       {
         subtitle &&
         (
-
           <div className="
             text-[11px]
             text-gray-500
             mt-1
           ">
-
             {subtitle}
-
           </div>
-
         )
       }
-
-
-
 
 
     </div>
