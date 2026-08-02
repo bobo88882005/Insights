@@ -48,9 +48,26 @@ export default function UserList({
 
 
 
+
+  function getInitial(
+    username:string
+  ) {
+
+    return username
+      .charAt(0)
+      .toUpperCase();
+
+  }
+
+
+
+
+
   return (
 
-    <div>
+    <div className="
+      space-y-3
+    ">
 
 
 
@@ -72,6 +89,7 @@ export default function UserList({
 
 
 
+
       {
         filtered.length === 0
 
@@ -79,12 +97,19 @@ export default function UserList({
 
         (
 
-          <p className="
-            text-sm
-            text-gray-500
+          <div className="
+            py-6
+            text-center
           ">
-            Nessun utente trovato
-          </p>
+
+            <p className="
+              text-sm
+              text-gray-500
+            ">
+              Nessun utente trovato
+            </p>
+
+          </div>
 
         )
 
@@ -93,8 +118,14 @@ export default function UserList({
         (
 
           <div className="
-            space-y-1
-            max-h-80
+            rounded-2xl
+            overflow-hidden
+            border
+            border-white/10
+            bg-black/10
+            divide-y
+            divide-white/10
+            max-h-96
             overflow-y-auto
           ">
 
@@ -102,7 +133,9 @@ export default function UserList({
 
             {
               filtered.map(
+
                 user =>
+
                 (
 
                   <a
@@ -121,61 +154,130 @@ export default function UserList({
 
                     className="
                       flex
-                      justify-between
                       items-center
-                      rounded-lg
-                      px-2
-                      py-2
-                      hover:bg-white/10
+                      justify-between
+                      px-4
+                      py-3
                       transition
+                      active:bg-white/10
+                      hover:bg-white/5
                     "
 
                   >
 
 
 
-                    <span className="
-                      text-sm
-                      font-medium
+
+                    <div className="
+                      flex
+                      items-center
+                      gap-3
                     ">
-                      @{user.username}
-                    </span>
+
+
+
+                      <div className="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-gradient-to-br
+                        from-purple-500
+                        via-pink-500
+                        to-orange-400
+                        flex
+                        items-center
+                        justify-center
+                        font-bold
+                        text-sm
+                        text-white
+                      ">
+
+                        {
+                          getInitial(
+                            user.username
+                          )
+                        }
+
+                      </div>
 
 
 
 
 
-                    {
-                      showDate &&
-                      user.followedAt &&
-                      (
+                      <div>
 
-                        <span className="
-                          text-xs
-                          text-gray-500
+
+                        <div className="
+                          text-sm
+                          font-semibold
                         ">
-                          {
-                            user.followedAt.toLocaleDateString(
-                              "it-IT",
+
+                          @{user.username}
+
+                        </div>
+
+
+
+
+
+                        {
+                          showDate &&
+                          user.followedAt &&
+                          (
+
+                            <div className="
+                              text-xs
+                              text-gray-500
+                              mt-1
+                            ">
+
+                              Seguito il&nbsp;
+
                               {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric"
+                                user.followedAt.toLocaleDateString(
+                                  "it-IT",
+                                  {
+                                    day:"2-digit",
+                                    month:"short",
+                                    year:"numeric"
+                                  }
+                                )
                               }
-                            )
-                          }
-                        </span>
 
-                      )
-                    }
+                            </div>
 
+                          )
+                        }
+
+
+
+                      </div>
+
+
+
+                    </div>
+
+
+
+
+
+                    <div className="
+                      text-gray-500
+                      text-xl
+                    ">
+
+                      ›
+
+                    </div>
 
 
 
                   </a>
 
                 )
+
               )
+
             }
 
 
