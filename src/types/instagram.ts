@@ -1,36 +1,35 @@
 export interface InstagramUser {
 
-  username: string;
+  username:string;
 
-  profileUrl: string;
+  profileUrl:string;
 
-  followedAt: Date | null;
+  followedAt:Date | null;
 
   source:
-    | "followers"
-    | "following"
-    | "pending"
-    | "received"
-    | "recentlyUnfollowed";
+    "followers" |
+    "following";
 
 }
+
 
 
 
 
 export interface ParsedInstagramData {
 
-  followers: InstagramUser[];
+  followers:InstagramUser[];
 
-  following: InstagramUser[];
+  following:InstagramUser[];
 
-  pendingRequests: InstagramUser[];
+  pendingRequests:InstagramUser[];
 
-  receivedRequests: InstagramUser[];
+  receivedRequests:InstagramUser[];
 
-  recentlyUnfollowed: InstagramUser[];
+  recentlyUnfollowed:InstagramUser[];
 
 }
+
 
 
 
@@ -38,56 +37,57 @@ export interface ParsedInstagramData {
 export interface InstagramAnalysis {
 
 
-  followers: InstagramUser[];
+  followers:InstagramUser[];
 
 
-  following: InstagramUser[];
+  following:InstagramUser[];
 
 
-  notFollowingBack: InstagramUser[];
+
+  notFollowingBack:InstagramUser[];
 
 
-  youDontFollowBack: InstagramUser[];
-
-
-  pendingRequests: InstagramUser[];
-
-
-  receivedRequests: InstagramUser[];
-
-
-  recentlyUnfollowed: InstagramUser[];
-
-
-  possibleInactive: InstagramUser[];
-
-
-  excludedUsers: InstagramUser[];
+  youDontFollowBack:InstagramUser[];
 
 
 
 
-  followersCount: number;
+  pendingRequests:InstagramUser[];
 
 
-  followingCount: number;
+  receivedRequests:InstagramUser[];
 
 
-  originalFollowingCount: number;
+  recentlyUnfollowed:InstagramUser[];
 
 
-  excludedCount: number;
 
 
-  reciprocalCount: number;
+  possibleInactive:InstagramUser[];
 
 
-  notFollowingBackCount: number;
 
 
-  youDontFollowBackCount: number;
+  followersCount:number;
 
 
-  inactiveCount: number;
+  followingCount:number;
+
+
+  originalFollowingCount:number;
+
+
+  inactiveCount:number;
+
+
+
+  reciprocalCount:number;
+
+
+  notFollowingBackCount:number;
+
+
+  youDontFollowBackCount:number;
+
 
 }
