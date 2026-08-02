@@ -1,12 +1,3 @@
-export type InstagramSource =
-  | "followers"
-  | "following"
-  | "pending"
-  | "received"
-  | "recentlyUnfollowed";
-
-
-
 export interface InstagramUser {
 
   username: string;
@@ -15,9 +6,15 @@ export interface InstagramUser {
 
   followedAt: Date | null;
 
-  source: InstagramSource;
+  source:
+    | "followers"
+    | "following"
+    | "pending"
+    | "received"
+    | "recentlyUnfollowed";
 
 }
+
 
 
 
@@ -90,6 +87,7 @@ export interface InstagramAnalysis {
 
 
   inactiveCount: number;
+
 
 
 
