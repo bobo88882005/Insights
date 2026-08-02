@@ -10,13 +10,13 @@ export type InstagramSource =
 
 export interface InstagramUser {
 
-  username: string;
+  username:string;
 
-  profileUrl: string;
+  profileUrl:string;
 
-  followedAt: Date | null;
+  followedAt:Date | null;
 
-  source: InstagramSource;
+  source:InstagramSource;
 
 }
 
@@ -26,15 +26,15 @@ export interface InstagramUser {
 
 export interface ParsedInstagramData {
 
-  followers: InstagramUser[];
+  followers:InstagramUser[];
 
-  following: InstagramUser[];
+  following:InstagramUser[];
 
-  pendingRequests: InstagramUser[];
+  pendingRequests:InstagramUser[];
 
-  receivedRequests: InstagramUser[];
+  receivedRequests:InstagramUser[];
 
-  recentlyUnfollowed: InstagramUser[];
+  recentlyUnfollowed:InstagramUser[];
 
 }
 
@@ -45,62 +45,81 @@ export interface ParsedInstagramData {
 export interface InstagramAnalysis {
 
 
-  followers: InstagramUser[];
+  followers:InstagramUser[];
 
 
-  following: InstagramUser[];
-
-
-  notFollowingBack: InstagramUser[];
-
-
-  youDontFollowBack: InstagramUser[];
+  following:InstagramUser[];
 
 
 
 
-  pendingRequests: InstagramUser[];
+  notFollowingBack:InstagramUser[];
 
 
-  receivedRequests: InstagramUser[];
-
-
-  recentlyUnfollowed: InstagramUser[];
+  youDontFollowBack:InstagramUser[];
 
 
 
 
-  possibleInactive: InstagramUser[];
+  pendingRequests:InstagramUser[];
 
 
-  excludedUsers: InstagramUser[];
+  receivedRequests:InstagramUser[];
 
 
-
-
-  followersCount: number;
-
-
-  followingCount: number;
-
-
-  originalFollowingCount: number;
-
-
-  excludedCount: number;
-
-
-  inactiveCount: number;
+  recentlyUnfollowed:InstagramUser[];
 
 
 
 
-  reciprocalCount: number;
+  possibleInactive:InstagramUser[];
 
 
-  notFollowingBackCount: number;
+  excludedUsers:InstagramUser[];
 
 
-  youDontFollowBackCount: number;
+
+
+
+  followersCount:number;
+
+
+  followingCount:number;
+
+
+  originalFollowingCount:number;
+
+
+  excludedCount:number;
+
+
+  inactiveCount:number;
+
+
+
+
+
+  reciprocalCount:number;
+
+
+  notFollowingBackCount:number;
+
+
+  youDontFollowBackCount:number;
+
+
+
+
+
+  reciprocalPercentage:number;
+
+
+  notFollowingBackPercentage:number;
+
+
+  engagementRate:number;
+
+
+  profileScore:number;
 
 }
