@@ -1,28 +1,29 @@
 import { InstagramUser } from "../types/instagram";
 
 
-
 function cleanUsername(
-  value: string
+  value:string
 ): string | null {
-
 
   const username =
     value
       .trim()
       .toLowerCase()
-      .replace(/^@/, "")
-      .replace(/^https?:\/\/(www\.)?instagram\.com\//, "")
-      .replace(/[\/?#].*$/, "");
+      .replace("@","")
+      .trim();
 
 
-
-  if (
+  if(
     !/^[a-z0-9._]+$/.test(username)
-  ) {
-
+  ){
     return null;
+  }
 
+
+  if(
+    username.startsWith("__deleted__")
+  ){
+    return null;
   }
 
 
@@ -34,22 +35,63 @@ function cleanUsername(
 
 
 function extractTimestamp(
-  text: string
+  text:string
 ): Date | null {
 
 
   const match =
     text.match(
-      /timestamp["']?\s*[:=]\s*["']?(\d+)/i
+      /datetime="([^"]+)"/i
     );
 
 
-  if (!match)
-    return null;
+  if(match){
+
+    const date =
+      new Date(match[1]);
+
+    if(!isNaN(date.getTime()))
+      return date;
+
+  }
 
 
-  return new Date(
-    Number(match[1]) * 1000
+  return null;
+
+}
+
+
+
+
+
+function addUser(
+  map:Map<string,InstagramUser>,
+  username:string,
+  source:
+    "followers" |
+    "following"
+){
+
+  const clean =
+    cleanUsername(username);
+
+
+  if(!clean)
+    return;
+
+
+  map.set(
+    clean,
+    {
+      username:clean,
+
+      profileUrl:
+        `https://www.instagram.com/${clean}/`,
+
+      followedAt:null,
+
+      source
+    }
   );
 
 }
@@ -59,80 +101,114 @@ function extractTimestamp(
 
 
 export function extractUsersFromHTML(
-  html: string,
+  html:string,
+
   source:
-    | "followers"
-    | "following"
-    | "pending"
-    | "received"
-    | "recentlyUnfollowed"
-): InstagramUser[] {
+    "followers" |
+    "following"
+):InstagramUser[]{
 
 
 
   const users =
-    new Map<string, InstagramUser>();
+    new Map<string,InstagramUser>();
 
 
 
   const decoded =
     html
-      .replace(/&quot;/g, '"')
-      .replace(/&#x27;/g, "'")
-      .replace(/&amp;/g, "&");
+      .replace(/&quot;/g,'"')
+      .replace(/&#x27;/g,"'")
+      .replace(/&amp;/g,"&");
 
 
 
+
+
+  /*
+    Metodo 1:
+    link Instagram
+  */
 
 
   const links =
-    decoded.matchAll(
-      /href=["']([^"']*instagram\.com\/[^"']+)["']/gi
+    decoded.match(
+      /instagram\.com\/[a-zA-Z0-9._]+/gi
     );
 
 
 
-  for (
-    const match of links
-  ) {
+  if(links){
 
+    links.forEach(link=>{
 
-    const username =
-      cleanUsername(
-        match[1]
+      addUser(
+        users,
+
+        link.replace(
+          /instagram\.com\//i,
+          ""
+        ),
+
+        source
       );
 
 
-
-    if (username) {
-
-
-      users.set(
-        username,
-        {
-
-          username,
-
-          profileUrl:
-            `https://www.instagram.com/${username}/`,
-
-          followedAt:
-            extractTimestamp(
-              match[0]
-            ),
-
-          source
-
-        }
-      );
-
-    }
+    });
 
   }
 
 
 
 
+
+
+
+  /*
+    Metodo 2:
+    nuovi export Instagram 2026
+
+    Nome utente
+    username
+  */
+
+
+  const usernameBlocks =
+    decoded.matchAll(
+      /Nome utente<\/td>\s*<td[^>]*>(.*?)<\/td>/gis
+    );
+
+
+
+  for(
+    const block of usernameBlocks
+  ){
+
+    const username =
+      block[1]
+        .replace(/<[^>]+>/g,"")
+        .trim();
+
+
+
+    addUser(
+      users,
+      username,
+      source
+    );
+
+  }
+
+
+
+
+
+
+
+  /*
+    Metodo 3:
+    vecchi export con h2
+  */
 
 
   const h2 =
@@ -142,52 +218,30 @@ export function extractUsersFromHTML(
 
 
 
-  if (h2) {
+  if(h2){
+
+    h2.forEach(item=>{
 
 
-    h2.forEach(
-      item => {
-
-
-        const username =
-          cleanUsername(
-            item.replace(
-              /<[^>]+>/g,
-              ""
-            )
-          );
+      const username =
+        item
+          .replace(/<[^>]+>/g,"")
+          .trim();
 
 
 
-        if (username) {
+      addUser(
+        users,
+        username,
+        source
+      );
 
 
-          users.set(
-            username,
-            {
-
-              username,
-
-              profileUrl:
-                `https://www.instagram.com/${username}/`,
-
-              followedAt:
-                extractTimestamp(
-                  item
-                ),
-
-              source
-
-            }
-          );
-
-        }
-
-
-      }
-    );
+    });
 
   }
+
+
 
 
 
