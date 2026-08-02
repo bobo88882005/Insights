@@ -10,15 +10,25 @@ import SearchInput from "../ui/SearchInput";
 
 
 interface Props {
+
   title:string;
+
   users:InstagramUser[];
+
+  showDate?:boolean;
+
 }
 
 
 
 export default function UserList({
-  users
+
+  users,
+
+  showDate = false
+
 }:Props) {
+
 
 
   const [search,setSearch] =
@@ -43,29 +53,39 @@ export default function UserList({
     <div>
 
 
+
       {
         users.length > 5 &&
         (
+
           <SearchInput
+
             value={search}
+
             onChange={setSearch}
+
           />
+
         )
       }
 
 
 
+
       {
         filtered.length === 0
+
         ?
 
         (
+
           <p className="
             text-sm
             text-gray-500
           ">
             Nessun utente trovato
           </p>
+
         )
 
         :
@@ -85,10 +105,19 @@ export default function UserList({
                 (
 
                   <a
-                    key={user.username}
-                    href={user.profileUrl}
+
+                    key={
+                      user.username
+                    }
+
+                    href={
+                      user.profileUrl
+                    }
+
                     target="_blank"
+
                     rel="noreferrer"
+
                     className="
                       flex
                       justify-between
@@ -98,7 +127,10 @@ export default function UserList({
                       py-2
                       hover:bg-white/10
                     "
+
                   >
+
+
 
                     <span className="
                       text-sm
@@ -107,9 +139,14 @@ export default function UserList({
                     </span>
 
 
+
+
+
                     {
+                      showDate &&
                       user.followedAt &&
                       (
+
                         <span className="
                           text-xs
                           text-gray-500
@@ -121,12 +158,18 @@ export default function UserList({
                             )
                           }
                         </span>
+
                       )
                     }
+
+
+
+
 
                   </a>
 
                 )
+
               )
             }
 
