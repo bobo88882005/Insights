@@ -1,21 +1,41 @@
-import { useRef } from "react";
+import {
+  useRef,
+  useState
+} from "react";
 
 import {
-  Users,
-  UserMinus,
-  UserX,
   Upload
 } from "lucide-react";
 
-import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
+import {
+  useInstagramAnalyzer
+} from "../hooks/useInstagramAnalyzer";
 
 import UserList from "../components/lists/UserList";
-import CollapsibleCard from "../components/ui/CollapsibleCard";
-import ProfileScore from "../components/dashboard/ProfileScore";
+
+import SettingRow from "../components/ui/SettingRow";
+
+
+
+
+
+type Section =
+  | "followers"
+  | "following"
+  | "notFollowingBack"
+  | "pending"
+  | "inactive"
+  | "received"
+  | "recently";
+
+
+
+
 
 
 
 export default function Home() {
+
 
 
   const fileInput =
@@ -28,13 +48,21 @@ export default function Home() {
     loading,
     error,
     uploadZip
-  } = useInstagramAnalyzer();
+  } =
+    useInstagramAnalyzer();
+
+
+
+
+  const [section,setSection] =
+    useState<Section>("followers");
 
 
 
 
 
-  function openFilePicker() {
+
+  function openPicker(){
 
     fileInput.current?.click();
 
@@ -45,23 +73,86 @@ export default function Home() {
 
 
 
+
   async function handleFile(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+    e:React.ChangeEvent<HTMLInputElement>
+  ){
 
 
     const file =
-      event.target.files?.[0];
+      e.target.files?.[0];
 
 
-    if (!file)
-      return;
+    if(file){
 
+      await uploadZip(file);
 
-    await uploadZip(file);
+    }
 
 
   }
+
+
+
+
+
+
+
+  function getUsers(){
+
+
+    if(!analysis)
+      return [];
+
+
+
+    switch(section){
+
+
+      case "followers":
+
+        return analysis.followers;
+
+
+      case "following":
+
+        return analysis.following;
+
+
+      case "notFollowingBack":
+
+        return analysis.notFollowingBack;
+
+
+      case "pending":
+
+        return analysis.pendingRequests;
+
+
+      case "inactive":
+
+        return analysis.possibleInactive;
+
+
+      case "received":
+
+        return analysis.receivedRequests;
+
+
+      case "recently":
+
+        return analysis.recentlyUnfollowed;
+
+
+      default:
+
+        return [];
+
+    }
+
+
+  }
+
 
 
 
@@ -78,10 +169,12 @@ export default function Home() {
 
 
 
+
+
       <div>
 
         <h1 className="
-          text-3xl
+          text-2xl
           font-bold
           tracking-tight
         ">
@@ -90,13 +183,12 @@ export default function Home() {
 
 
         <p className="
-          text-gray-400
           text-sm
+          text-gray-400
           mt-1
         ">
-          Analisi followers e following
+          Analisi account
         </p>
-
 
       </div>
 
@@ -106,123 +198,77 @@ export default function Home() {
 
 
 
-      {
-        analysis &&
-        (
-
-          <ProfileScore
-
-            score={
-              analysis.profileScore
-            }
-
-            reciprocal={
-              analysis.reciprocalPercentage
-            }
-
-            notFollowingBack={
-              analysis.notFollowingBackPercentage
-            }
-
-          />
-
-        )
-      }
-
-
-
-
-
-
-
       <div className="
-        grid
-        grid-cols-2
-        gap-3
+        rounded-2xl
+        overflow-hidden
+        bg-[#1c1c1e]
+        divide-y
+        divide-white/5
       ">
 
 
-
-        <StatCard
+        <SettingRow
 
           title="Followers"
 
-          value={
+          count={
             analysis?.followersCount ?? 0
           }
 
-          icon={
-            <Users size={18}/>
+          onClick={()=>
+            setSection("followers")
           }
 
         />
 
 
 
-
-
-        <StatCard
+        <SettingRow
 
           title="Following"
 
-          value={
+          count={
             analysis?.followingCount ?? 0
           }
 
-          icon={
-            <Users size={18}/>
+          onClick={()=>
+            setSection("following")
           }
 
         />
 
 
-      </div>
 
-
-
-
-
-
-
-      <div className="
-        grid
-        grid-cols-2
-        gap-3
-      ">
-
-
-
-        <StatCard
+        <SettingRow
 
           title="Non ricambiano"
 
-          value={
+          count={
             analysis?.notFollowingBackCount ?? 0
           }
 
-          icon={
-            <UserMinus size={18}/>
+          onClick={()=>
+            setSection("notFollowingBack")
           }
 
         />
 
 
 
+        <SettingRow
 
+          title="Pending requests"
 
-        <StatCard
-
-          title="Possibili inattivi"
-
-          value={
-            analysis?.inactiveCount ?? 0
+          count={
+            analysis?.pendingRequests.length ?? 0
           }
 
-          icon={
-            <UserX size={18}/>
+          onClick={()=>
+            setSection("pending")
           }
 
         />
+
 
 
       </div>
@@ -234,14 +280,97 @@ export default function Home() {
 
 
       <div className="
-        rounded-3xl
-        border
-        border-white/10
-        bg-white/[0.06]
-        backdrop-blur-xl
-        p-4
+        rounded-2xl
+        overflow-hidden
+        bg-[#141416]
+        divide-y
+        divide-white/5
       ">
 
+
+        <div className="
+          px-4
+          py-2
+          text-xs
+          text-gray-500
+          uppercase
+          tracking-wide
+        ">
+          Altri dati
+        </div>
+
+
+
+
+        <SettingRow
+
+          title="Possibili inattivi"
+
+          count={
+            analysis?.inactiveCount ?? 0
+          }
+
+          muted
+
+          onClick={()=>
+            setSection("inactive")
+          }
+
+        />
+
+
+
+
+        <SettingRow
+
+          title="Richieste ricevute"
+
+          count={
+            analysis?.receivedRequests.length ?? 0
+          }
+
+          muted
+
+          onClick={()=>
+            setSection("received")
+          }
+
+        />
+
+
+
+
+        <SettingRow
+
+          title="Recently unfollowed"
+
+          count={
+            analysis?.recentlyUnfollowed.length ?? 0
+          }
+
+          muted
+
+          onClick={()=>
+            setSection("recently")
+          }
+
+        />
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div className="
+        rounded-2xl
+        bg-[#1c1c1e]
+        p-4
+      ">
 
 
         <input
@@ -260,43 +389,46 @@ export default function Home() {
 
 
 
-
-
         <button
 
-          onClick={openFilePicker}
+          onClick={openPicker}
 
           className="
             w-full
-            flex
-            justify-center
-            items-center
-            gap-2
-            rounded-2xl
-            py-4
+            rounded-xl
+            py-3
             bg-gradient-to-r
             from-purple-500
             via-pink-500
             to-orange-400
             font-semibold
-            transition
             active:scale-95
+            transition
           "
 
         >
 
-          <Upload size={18}/>
+          <div className="
+            flex
+            items-center
+            justify-center
+            gap-2
+          ">
 
+            <Upload size={18}/>
 
-          {
-            loading
-              ? "Analisi..."
-              : "Carica ZIP Instagram"
-          }
+            {
+              loading
+              ?
+              "Analisi..."
+              :
+              "Carica ZIP Instagram"
+            }
+
+          </div>
 
 
         </button>
-
 
 
 
@@ -330,209 +462,41 @@ export default function Home() {
         analysis &&
         (
 
-          <div className="
-            space-y-3
-          ">
+          <div>
 
 
+            <h2 className="
+              text-sm
+              text-gray-400
+              mb-2
+            ">
 
-
-            <CollapsibleCard
-
-              title="Non ricambiano"
-
-              count={
-                analysis.notFollowingBackCount
+              {
+                section === "notFollowingBack"
+                ?
+                "Non ricambiano"
+                :
+                section
               }
 
-            >
-
-              <UserList
-
-                title=""
-
-                users={
-                  analysis.notFollowingBack
-                }
-
-              />
-
-            </CollapsibleCard>
+            </h2>
 
 
 
+            <UserList
 
+              title=""
 
-
-
-            <CollapsibleCard
-
-              title="Possibili inattivi"
-
-              count={
-                analysis.inactiveCount
+              users={
+                getUsers()
               }
 
-            >
-
-              <UserList
-
-                title=""
-
-                users={
-                  analysis.possibleInactive
-                }
-
-              />
-
-            </CollapsibleCard>
-
-
-
-
-
-
-
-            <CollapsibleCard
-
-              title="Followers"
-
-              count={
-                analysis.followersCount
+              showDate={
+                section === "followers" ||
+                section === "following"
               }
 
-            >
-
-              <UserList
-
-                title=""
-
-                users={
-                  analysis.followers
-                }
-
-                showDate
-
-              />
-
-            </CollapsibleCard>
-
-
-
-
-
-
-
-            <CollapsibleCard
-
-              title="Following"
-
-              count={
-                analysis.followingCount
-              }
-
-            >
-
-              <UserList
-
-                title=""
-
-                users={
-                  analysis.following
-                }
-
-                showDate
-
-              />
-
-            </CollapsibleCard>
-
-
-
-
-
-
-
-            <CollapsibleCard
-
-              title="Richieste ricevute"
-
-              count={
-                analysis.receivedRequests.length
-              }
-
-            >
-
-              <UserList
-
-                title=""
-
-                users={
-                  analysis.receivedRequests
-                }
-
-              />
-
-            </CollapsibleCard>
-
-
-
-
-
-
-
-            <CollapsibleCard
-
-              title="Pending requests"
-
-              count={
-                analysis.pendingRequests.length
-              }
-
-            >
-
-              <UserList
-
-                title=""
-
-                users={
-                  analysis.pendingRequests
-                }
-
-              />
-
-            </CollapsibleCard>
-
-
-
-
-
-
-
-            <CollapsibleCard
-
-              title="Recently unfollowed"
-
-              count={
-                analysis.recentlyUnfollowed.length
-              }
-
-            >
-
-              <UserList
-
-                title=""
-
-                users={
-                  analysis.recentlyUnfollowed
-                }
-
-              />
-
-            </CollapsibleCard>
-
-
-
+            />
 
 
           </div>
@@ -541,82 +505,6 @@ export default function Home() {
       }
 
 
-
-    </div>
-
-  );
-
-}
-
-
-
-
-
-
-
-function StatCard({
-
-  title,
-
-  value,
-
-  icon
-
-}: {
-
-  title:string;
-
-  value:number;
-
-  icon:React.ReactNode;
-
-}) {
-
-
-  return (
-
-    <div className="
-      rounded-3xl
-      border
-      border-white/10
-      bg-white/[0.06]
-      backdrop-blur-xl
-      p-4
-    ">
-
-
-      <div className="
-        text-pink-400
-      ">
-
-        {icon}
-
-      </div>
-
-
-
-
-      <div className="
-        text-2xl
-        font-bold
-        mt-3
-      ">
-
-        {value}
-
-      </div>
-
-
-
-
-      <div className="
-        text-xs
-        text-gray-400
-      ">
-
-        {title}
-
-      </div>
 
 
     </div>
