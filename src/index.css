@@ -15,73 +15,82 @@
     system-ui,
     sans-serif;
 
-  color-scheme: dark;
+
+  color:
+    white;
+
 
   background:
     #000;
 
-  color:
-    #fff;
 
   font-synthesis:
     none;
 
+
   text-rendering:
     optimizeLegibility;
+
 
   -webkit-font-smoothing:
     antialiased;
 
-  -moz-osx-font-smoothing:
-    grayscale;
-
 }
 
 
 
 
+html,
+body,
+#root {
 
-html {
-
-  background:
-    #000;
+  min-height:
+    100%;
 
 }
-
 
 
 
 
 body {
 
-  margin:0;
+  margin:
+    0;
 
-  min-width:
-    320px;
-
-  min-height:
-    100vh;
 
   background:
-    linear-gradient(
-      180deg,
-      #0b0b0f 0%,
-      #000 100%
-    );
+
+    radial-gradient(
+      circle at top,
+      rgba(
+        255,
+        0,
+        120,
+        .18
+      ),
+      transparent 35%
+    ),
+
+
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(
+        120,
+        70,
+        255,
+        .18
+      ),
+      transparent 30%
+    ),
+
+
+    #000;
+
+
+  color:
+    white;
 
 }
-
-
-
-
-
-#root {
-
-  min-height:
-    100vh;
-
-}
-
 
 
 
@@ -92,7 +101,6 @@ body {
     border-box;
 
 }
-
 
 
 
@@ -108,7 +116,6 @@ a {
 
 
 
-
 button {
 
   user-select:
@@ -119,15 +126,12 @@ button {
 
 
 
-
 ::-webkit-scrollbar {
 
   width:
-    5px;
+    4px;
 
 }
-
-
 
 
 
@@ -140,8 +144,6 @@ button {
 
 
 
-
-
 ::-webkit-scrollbar-thumb {
 
   background:
@@ -149,7 +151,7 @@ button {
       255,
       255,
       255,
-      .18
+      .2
     );
 
   border-radius:
@@ -161,18 +163,27 @@ button {
 
 
 
-@keyframes iosFade {
+
+/*
+  Effetto entrata schermate
+*/
+
+@keyframes appEnter {
+
 
   from {
 
     opacity:
       0;
 
+
     transform:
-      translateY(8px)
-      scale(.98);
+
+      translateY(12px)
+      scale(.97);
 
   }
+
 
 
   to {
@@ -180,23 +191,25 @@ button {
     opacity:
       1;
 
+
     transform:
+
       translateY(0)
       scale(1);
 
   }
 
+
 }
-
-
 
 
 
 .animate-ios-in {
 
   animation:
-    iosFade
-    .25s
+
+    appEnter
+    .35s
     cubic-bezier(
       .22,
       1,
@@ -210,22 +223,17 @@ button {
 
 
 
-@keyframes iosPress {
-
-  from {
-
-    transform:
-      scale(1);
-
-  }
 
 
-  to {
+/*
+  effetto pressione stile iPhone
+*/
 
-    transform:
-      scale(.96);
 
-  }
+button:active {
+
+  transform:
+    scale(.97);
 
 }
 
@@ -233,59 +241,42 @@ button {
 
 
 
-.active-ios {
-
-  animation:
-    iosPress
-    .15s
-    ease-out;
-
-}
-
-
-
+/*
+  vetro iOS
+*/
 
 
 .glass {
 
+
   background:
+
     rgba(
       255,
       255,
       255,
-      .06
+      .07
     );
 
+
+  backdrop-filter:
+
+    blur(25px);
+
+
+  -webkit-backdrop-filter:
+
+    blur(25px);
+
+
   border:
+
     1px solid
     rgba(
       255,
       255,
       255,
-      .10
-    );
-
-  backdrop-filter:
-    blur(20px);
-
-  -webkit-backdrop-filter:
-    blur(20px);
-
-}
-
-
-
-
-
-.ios-shadow {
-
-  box-shadow:
-    0 10px 40px
-    rgba(
-      0,
-      0,
-      0,
-      .35
+      .12
     );
 
 }
