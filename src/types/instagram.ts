@@ -61,6 +61,7 @@ export interface InstagramAnalysis {
 
 
 
+
   pendingRequests:InstagramUser[];
 
 
@@ -72,10 +73,8 @@ export interface InstagramAnalysis {
 
 
 
+
   possibleInactive:InstagramUser[];
-
-
-  excludedUsers:InstagramUser[];
 
 
 
@@ -88,9 +87,6 @@ export interface InstagramAnalysis {
 
 
   originalFollowingCount:number;
-
-
-  excludedCount:number;
 
 
   inactiveCount:number;
