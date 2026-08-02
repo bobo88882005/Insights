@@ -1,119 +1,145 @@
 import {
+  useState
+} from "react";
+
+import {
   InstagramUser
 } from "../../types/instagram";
 
+import SearchInput from "../ui/SearchInput";
+
 
 interface Props {
-  title: string;
-  users: InstagramUser[];
+  title:string;
+  users:InstagramUser[];
 }
+
 
 
 export default function UserList({
   users
-}: Props) {
+}:Props) {
 
 
-  if (users.length === 0) {
+  const [search,setSearch] =
+    useState("");
 
-    return (
-      <p className="
-        text-sm
-        text-gray-500
-      ">
-        Nessun utente trovato
-      </p>
+
+
+  const filtered =
+    users.filter(
+      user =>
+        user.username
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          )
     );
-
-  }
 
 
 
   return (
 
-    <div className="
-      space-y-1
-      max-h-80
-      overflow-y-auto
-    ">
+    <div>
 
 
       {
-        users.map(user => (
-
-          <a
-            key={user.username}
-            href={user.profileUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="
-              flex
-              items-center
-              justify-between
-              rounded-lg
-              px-2
-              py-2
-              hover:bg-white/10
-              transition
-            "
-          >
+        users.length > 5 &&
+        (
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+          />
+        )
+      }
 
 
-            <span className="
-              text-sm
-              font-medium
-            ">
-              @{user.username}
-            </span>
 
+      {
+        filtered.length === 0
+        ?
+
+        (
+          <p className="
+            text-sm
+            text-gray-500
+          ">
+            Nessun utente trovato
+          </p>
+        )
+
+        :
+
+        (
+
+          <div className="
+            space-y-1
+            max-h-80
+            overflow-y-auto
+          ">
 
 
             {
-              user.followedAt &&
-              (
+              filtered.map(
+                user =>
+                (
 
-                <span className="
-                  text-xs
-                  text-gray-500
-                  ml-2
-                ">
-                  {
-                    formatDate(
-                      user.followedAt
-                    )
-                  }
-                </span>
+                  <a
+                    key={user.username}
+                    href={user.profileUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="
+                      flex
+                      justify-between
+                      items-center
+                      rounded-lg
+                      px-2
+                      py-2
+                      hover:bg-white/10
+                    "
+                  >
 
+                    <span className="
+                      text-sm
+                    ">
+                      @{user.username}
+                    </span>
+
+
+                    {
+                      user.followedAt &&
+                      (
+                        <span className="
+                          text-xs
+                          text-gray-500
+                        ">
+                          {
+                            user.followedAt
+                            .toLocaleDateString(
+                              "it-IT"
+                            )
+                          }
+                        </span>
+                      )
+                    }
+
+                  </a>
+
+                )
               )
             }
 
 
-          </a>
+          </div>
 
-        ))
+        )
+
       }
 
 
     </div>
 
-  );
-
-}
-
-
-
-
-function formatDate(
-  date: Date
-) {
-
-  return date.toLocaleDateString(
-    "it-IT",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    }
   );
 
 }
