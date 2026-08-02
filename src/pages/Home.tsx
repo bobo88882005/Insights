@@ -30,6 +30,7 @@ export default function Home() {
     useRef<HTMLInputElement>(null);
 
 
+
   const {
     analysis,
     loading,
@@ -39,14 +40,15 @@ export default function Home() {
 
 
 
-  const [activeTab, setActiveTab] =
+
+  const [activeTab,setActiveTab] =
     useState<MainTab>("followers");
 
 
 
 
 
-  function openPicker() {
+  function openPicker(){
 
     fileInput.current?.click();
 
@@ -56,15 +58,16 @@ export default function Home() {
 
 
 
+
   async function handleFile(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+    event:React.ChangeEvent<HTMLInputElement>
+  ){
 
     const file =
       event.target.files?.[0];
 
 
-    if (!file)
+    if(!file)
       return;
 
 
@@ -76,38 +79,40 @@ export default function Home() {
 
 
 
+
   const tabs = [
 
     {
-      id: "followers",
-      title: "Followers",
+      id:"followers",
+      title:"Followers",
       count:
         analysis?.followersCount ?? 0
     },
 
 
     {
-      id: "following",
-      title: "Following",
+      id:"following",
+      title:"Following",
       count:
         analysis?.followingCount ?? 0
     },
 
 
     {
-      id: "notFollowingBack",
-      title: "Non ricambiano",
+      id:"notFollowingBack",
+      title:"Non ricambiano",
       count:
         analysis?.notFollowingBackCount ?? 0
     },
 
 
     {
-      id: "pending",
-      title: "Pending",
+      id:"pending",
+      title:"Pending",
       count:
         analysis?.pendingRequests.length ?? 0
     }
+
 
   ] as const;
 
@@ -116,15 +121,16 @@ export default function Home() {
 
 
 
-  function currentUsers() {
+
+  function currentUsers(){
 
 
-    if (!analysis)
+    if(!analysis)
       return [];
 
 
 
-    switch (activeTab) {
+    switch(activeTab){
 
 
       case "followers":
@@ -181,7 +187,9 @@ export default function Home() {
             tracking-tight
           "
         >
+
           Instagram Insights
+
         </h1>
 
 
@@ -191,8 +199,11 @@ export default function Home() {
             text-gray-500
           "
         >
+
           Analisi followers e following
+
         </p>
+
 
       </div>
 
@@ -203,20 +214,24 @@ export default function Home() {
 
 
 
+
       <div
         className="
+          relative
           rounded-2xl
-          bg-white/5
           border
           border-white/10
+          bg-white/5
           backdrop-blur-xl
           p-1
         "
       >
 
 
+
         <div
           className="
+            relative
             grid
             grid-cols-4
             gap-1
@@ -224,8 +239,57 @@ export default function Home() {
         >
 
 
+
+          <div
+
+            className="
+              absolute
+              top-0
+              bottom-0
+              rounded-xl
+              bg-white/15
+              transition-all
+              duration-300
+            "
+
+            style={{
+
+              width:
+                "calc(25% - 4px)",
+
+
+              left:
+
+                activeTab === "followers"
+                ? "2px"
+
+                :
+
+                activeTab === "following"
+                ? "25%"
+
+                :
+
+                activeTab === "notFollowingBack"
+                ? "50%"
+
+                :
+
+                "75%"
+
+            }}
+
+          />
+
+
+
+
+
+
+
           {
-            tabs.map(tab => (
+            tabs.map(tab=>(
+
 
               <button
 
@@ -236,53 +300,55 @@ export default function Home() {
                 }
 
 
-                className={`
+                className="
+                  relative
+                  z-10
                   rounded-xl
                   py-3
                   text-[11px]
-                  transition-all
-
-                  ${
-                    activeTab === tab.id
-
-                    ?
-
-                    "
-                    bg-white/15
-                    text-white
-                    "
-
-                    :
-
-                    "
-                    text-gray-400
-                    "
-
-                  }
-
-                `}
+                "
 
               >
 
-                <div>
+
+                <div
+                  className={`
+                    ${
+                      activeTab===tab.id
+                      ?
+                      "text-white"
+                      :
+                      "text-gray-400"
+                    }
+                  `}
+                >
+
                   {tab.title}
+
                 </div>
+
 
 
                 <div
                   className="
                     mt-1
+                    text-[10px]
                     opacity-70
                   "
                 >
+
                   {tab.count}
+
                 </div>
+
 
 
               </button>
 
+
             ))
           }
+
 
 
         </div>
@@ -314,6 +380,7 @@ export default function Home() {
 
       >
 
+
         <UserList
 
           title=""
@@ -323,6 +390,7 @@ export default function Home() {
           }
 
         />
+
 
       </div>
 
@@ -355,11 +423,13 @@ export default function Home() {
             py-2
             text-[11px]
             uppercase
-            tracking-wider
+            tracking-wide
             text-gray-500
           "
         >
+
           Secondari
+
         </p>
 
 
@@ -440,6 +510,7 @@ export default function Home() {
 
 
 
+
         <button
 
           onClick={openPicker}
@@ -453,11 +524,12 @@ export default function Home() {
             via-pink-500
             to-orange-400
             font-semibold
-            transition
             active:scale-95
+            transition
           "
 
         >
+
 
           <Upload
             size={18}
@@ -470,19 +542,14 @@ export default function Home() {
 
           {
             loading
-
             ?
-
             "Analisi..."
-
             :
-
             "Carica ZIP Instagram"
           }
 
 
         </button>
-
 
 
 
@@ -497,10 +564,13 @@ export default function Home() {
               text-red-400
             "
           >
+
             {error}
+
           </p>
 
         }
+
 
 
       </div>
