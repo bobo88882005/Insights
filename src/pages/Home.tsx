@@ -11,8 +11,8 @@ import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
 
 import UserList from "../components/lists/UserList";
 import CollapsibleCard from "../components/ui/CollapsibleCard";
-import Badge from "../components/ui/Badge";
 import ProfileScore from "../components/dashboard/ProfileScore";
+
 
 
 export default function Home() {
@@ -97,7 +97,9 @@ export default function Home() {
           Analisi followers e following
         </p>
 
+
       </div>
+
 
 
 
@@ -140,6 +142,7 @@ export default function Home() {
       ">
 
 
+
         <StatCard
 
           title="Followers"
@@ -166,12 +169,6 @@ export default function Home() {
             analysis?.followingCount ?? 0
           }
 
-          subtitle={
-            analysis
-              ? `${analysis.excludedCount} esclusi`
-              : ""
-          }
-
           icon={
             <Users size={18}/>
           }
@@ -187,12 +184,12 @@ export default function Home() {
 
 
 
-
       <div className="
         grid
         grid-cols-2
         gap-3
       ">
+
 
 
         <StatCard
@@ -236,7 +233,6 @@ export default function Home() {
 
 
 
-
       <div className="
         rounded-3xl
         border
@@ -265,6 +261,7 @@ export default function Home() {
 
 
 
+
         <button
 
           onClick={openFilePicker}
@@ -282,8 +279,8 @@ export default function Home() {
             via-pink-500
             to-orange-400
             font-semibold
-            active:scale-[0.98]
             transition
+            active:scale-95
           "
 
         >
@@ -329,7 +326,6 @@ export default function Home() {
 
 
 
-
       {
         analysis &&
         (
@@ -337,6 +333,7 @@ export default function Home() {
           <div className="
             space-y-3
           ">
+
 
 
 
@@ -396,7 +393,6 @@ export default function Home() {
 
 
 
-
             <CollapsibleCard
 
               title="Followers"
@@ -420,7 +416,6 @@ export default function Home() {
               />
 
             </CollapsibleCard>
-
 
 
 
@@ -458,8 +453,6 @@ export default function Home() {
 
 
 
-
-
             <CollapsibleCard
 
               title="Richieste ricevute"
@@ -488,7 +481,6 @@ export default function Home() {
 
 
 
-
             <CollapsibleCard
 
               title="Pending requests"
@@ -510,7 +502,6 @@ export default function Home() {
               />
 
             </CollapsibleCard>
-
 
 
 
@@ -563,14 +554,11 @@ export default function Home() {
 
 
 
-
 function StatCard({
 
   title,
 
   value,
-
-  subtitle,
 
   icon
 
@@ -579,8 +567,6 @@ function StatCard({
   title:string;
 
   value:number;
-
-  subtitle?:string;
 
   icon:React.ReactNode;
 
@@ -631,27 +617,6 @@ function StatCard({
         {title}
 
       </div>
-
-
-
-
-      {
-        subtitle &&
-        (
-
-          <div className="
-            text-[11px]
-            text-gray-500
-            mt-1
-          ">
-
-            {subtitle}
-
-          </div>
-
-        )
-      }
-
 
 
     </div>
