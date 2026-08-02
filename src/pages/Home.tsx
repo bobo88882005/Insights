@@ -12,30 +12,19 @@ import {
 } from "../hooks/useInstagramAnalyzer";
 
 import UserList from "../components/lists/UserList";
-
 import SettingRow from "../components/ui/SettingRow";
 
 
 
-
-
-type Section =
+type MainTab =
   | "followers"
   | "following"
   | "notFollowingBack"
-  | "pending"
-  | "inactive"
-  | "received"
-  | "recently";
+  | "pending";
 
 
 
-
-
-
-
-export default function Home() {
-
+export default function Home(){
 
 
   const fileInput =
@@ -48,15 +37,12 @@ export default function Home() {
     loading,
     error,
     uploadZip
-  } =
-    useInstagramAnalyzer();
+  } = useInstagramAnalyzer();
 
 
 
-
-  const [section,setSection] =
-    useState<Section>("followers");
-
+  const [activeTab,setActiveTab] =
+    useState<MainTab>("followers");
 
 
 
@@ -72,12 +58,9 @@ export default function Home() {
 
 
 
-
-
   async function handleFile(
     e:React.ChangeEvent<HTMLInputElement>
   ){
-
 
     const file =
       e.target.files?.[0];
@@ -89,70 +72,71 @@ export default function Home() {
 
     }
 
-
   }
 
 
 
 
 
+  const tabs = [
+
+    {
+      id:"followers",
+      title:"Followers",
+      count:analysis?.followersCount ?? 0
+    },
+
+    {
+      id:"following",
+      title:"Following",
+      count:analysis?.followingCount ?? 0
+    },
+
+    {
+      id:"notFollowingBack",
+      title:"Non ricambiano",
+      count:analysis?.notFollowingBackCount ?? 0
+    },
+
+    {
+      id:"pending",
+      title:"Pending",
+      count:analysis?.pendingRequests.length ?? 0
+    }
+
+  ] as const;
 
 
-  function getUsers(){
 
+
+
+  function currentUsers(){
 
     if(!analysis)
       return [];
 
 
-
-    switch(section){
-
+    switch(activeTab){
 
       case "followers":
-
         return analysis.followers;
 
 
       case "following":
-
         return analysis.following;
 
 
       case "notFollowingBack":
-
         return analysis.notFollowingBack;
 
 
       case "pending":
-
         return analysis.pendingRequests;
 
 
-      case "inactive":
-
-        return analysis.possibleInactive;
-
-
-      case "received":
-
-        return analysis.receivedRequests;
-
-
-      case "recently":
-
-        return analysis.recentlyUnfollowed;
-
-
-      default:
-
-        return [];
-
     }
 
-
   }
-
 
 
 
@@ -168,15 +152,11 @@ export default function Home() {
     ">
 
 
-
-
-
       <div>
 
         <h1 className="
           text-2xl
           font-bold
-          tracking-tight
         ">
           Instagram Insights
         </h1>
@@ -184,8 +164,7 @@ export default function Home() {
 
         <p className="
           text-sm
-          text-gray-400
-          mt-1
+          text-gray-500
         ">
           Analisi account
         </p>
@@ -196,79 +175,74 @@ export default function Home() {
 
 
 
-
-
       <div className="
         rounded-2xl
-        overflow-hidden
-        bg-[#1c1c1e]
-        divide-y
-        divide-white/5
+        bg-white/5
+        border
+        border-white/10
+        p-1
       ">
 
 
-        <SettingRow
-
-          title="Followers"
-
-          count={
-            analysis?.followersCount ?? 0
-          }
-
-          onClick={()=>
-            setSection("followers")
-          }
-
-        />
+        <div className="
+          grid
+          grid-cols-4
+          gap-1
+        ">
 
 
-
-        <SettingRow
-
-          title="Following"
-
-          count={
-            analysis?.followingCount ?? 0
-          }
-
-          onClick={()=>
-            setSection("following")
-          }
-
-        />
+        {
+          tabs.map(tab=>(
 
 
+            <button
 
-        <SettingRow
+              key={tab.id}
 
-          title="Non ricambiano"
+              onClick={()=>
+                setActiveTab(tab.id)
+              }
 
-          count={
-            analysis?.notFollowingBackCount ?? 0
-          }
+              className={`
+                rounded-xl
+                py-3
+                px-1
+                text-xs
+                transition
 
-          onClick={()=>
-            setSection("notFollowingBack")
-          }
+                ${
+                  activeTab===tab.id
+                  ?
+                  "bg-white/15 text-white"
+                  :
+                  "text-gray-400"
+                }
 
-        />
+              `}
+
+            >
+
+              <div>
+                {tab.title}
+              </div>
 
 
+              <div className="
+                text-[11px]
+                mt-1
+              ">
+                {tab.count}
+              </div>
 
-        <SettingRow
 
-          title="Pending requests"
+            </button>
 
-          count={
-            analysis?.pendingRequests.length ?? 0
-          }
 
-          onClick={()=>
-            setSection("pending")
-          }
+          ))
+        }
 
-        />
 
+        </div>
 
 
       </div>
@@ -281,24 +255,50 @@ export default function Home() {
 
       <div className="
         rounded-2xl
-        overflow-hidden
-        bg-[#141416]
-        divide-y
-        divide-white/5
+        border
+        border-white/10
+        bg-white/5
+        p-4
       ">
 
 
-        <div className="
-          px-4
-          py-2
+        <UserList
+
+          title=""
+
+          users={currentUsers()}
+
+        />
+
+
+      </div>
+
+
+
+
+
+
+
+
+      <div className="
+        rounded-2xl
+        border
+        border-white/10
+        bg-white/[0.03]
+        p-2
+      ">
+
+
+        <p className="
+          px-3
+          pt-2
+          pb-1
           text-xs
-          text-gray-500
           uppercase
-          tracking-wide
+          text-gray-500
         ">
           Altri dati
-        </div>
-
+        </p>
 
 
 
@@ -310,14 +310,7 @@ export default function Home() {
             analysis?.inactiveCount ?? 0
           }
 
-          muted
-
-          onClick={()=>
-            setSection("inactive")
-          }
-
         />
-
 
 
 
@@ -329,14 +322,7 @@ export default function Home() {
             analysis?.receivedRequests.length ?? 0
           }
 
-          muted
-
-          onClick={()=>
-            setSection("received")
-          }
-
         />
-
 
 
 
@@ -348,14 +334,7 @@ export default function Home() {
             analysis?.recentlyUnfollowed.length ?? 0
           }
 
-          muted
-
-          onClick={()=>
-            setSection("recently")
-          }
-
         />
-
 
 
       </div>
@@ -366,9 +345,12 @@ export default function Home() {
 
 
 
+
       <div className="
         rounded-2xl
-        bg-[#1c1c1e]
+        border
+        border-white/10
+        bg-white/5
         p-4
       ">
 
@@ -377,16 +359,15 @@ export default function Home() {
 
           ref={fileInput}
 
+          hidden
+
           type="file"
 
           accept=".zip"
 
-          hidden
-
           onChange={handleFile}
 
         />
-
 
 
         <button
@@ -399,112 +380,43 @@ export default function Home() {
             py-3
             bg-gradient-to-r
             from-purple-500
-            via-pink-500
-            to-orange-400
+            to-pink-500
             font-semibold
-            active:scale-95
-            transition
           "
 
         >
 
-          <div className="
-            flex
-            items-center
-            justify-center
-            gap-2
-          ">
+          <Upload
+            size={18}
+            className="inline mr-2"
+          />
 
-            <Upload size={18}/>
-
-            {
-              loading
-              ?
-              "Analisi..."
-              :
-              "Carica ZIP Instagram"
-            }
-
-          </div>
+          {
+            loading
+            ?
+            "Analisi..."
+            :
+            "Carica ZIP Instagram"
+          }
 
 
         </button>
 
 
 
-
         {
           error &&
-          (
-
-            <p className="
-              text-red-400
-              text-sm
-              mt-3
-            ">
-              {error}
-            </p>
-
-          )
+          <p className="
+            mt-3
+            text-sm
+            text-red-400
+          ">
+            {error}
+          </p>
         }
 
 
-
       </div>
-
-
-
-
-
-
-
-      {
-        analysis &&
-        (
-
-          <div>
-
-
-            <h2 className="
-              text-sm
-              text-gray-400
-              mb-2
-            ">
-
-              {
-                section === "notFollowingBack"
-                ?
-                "Non ricambiano"
-                :
-                section
-              }
-
-            </h2>
-
-
-
-            <UserList
-
-              title=""
-
-              users={
-                getUsers()
-              }
-
-              showDate={
-                section === "followers" ||
-                section === "following"
-              }
-
-            />
-
-
-          </div>
-
-        )
-      }
-
-
 
 
     </div>
