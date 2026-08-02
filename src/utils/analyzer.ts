@@ -14,18 +14,38 @@ function uniqueUsers(
   users: InstagramUser[]
 ): InstagramUser[] {
 
+
   const map =
     new Map<string, InstagramUser>();
 
 
   users.forEach(user => {
 
+
+    const username =
+      user.username.toLowerCase();
+
+
+
+    if (
+      username.startsWith("__deleted__")
+    ) {
+      return;
+    }
+
+
+
     map.set(
-      user.username,
-      user
+      username,
+      {
+        ...user,
+        username
+      }
     );
 
+
   });
+
 
 
   return Array.from(
@@ -33,6 +53,9 @@ function uniqueUsers(
   );
 
 }
+
+
+
 
 
 
@@ -50,10 +73,36 @@ export function analyzeInstagram(
 
 
 
-  const following =
+  const originalFollowing =
     uniqueUsers(
       data.following
     );
+
+
+
+
+  const excludedUsers =
+    originalFollowing.filter(
+      user =>
+        isExcluded(
+          user.username
+        )
+    );
+
+
+
+
+
+  const following =
+    originalFollowing.filter(
+      user =>
+        !isExcluded(
+          user.username
+        )
+    );
+
+
+
 
 
 
@@ -78,36 +127,16 @@ export function analyzeInstagram(
 
 
 
-  const excludedUsers =
-    following.filter(
-      user =>
-        isExcluded(
-          user.username
-        )
-    );
-
-
-
-
-  const cleanFollowing =
-    following.filter(
-      user =>
-        !isExcluded(
-          user.username
-        )
-    );
-
-
-
 
 
   const notFollowingBack =
-    cleanFollowing.filter(
+    following.filter(
       user =>
         !followerNames.has(
           user.username
         )
     );
+
 
 
 
@@ -125,8 +154,10 @@ export function analyzeInstagram(
 
 
 
+
+
   const reciprocal =
-    cleanFollowing.filter(
+    following.filter(
       user =>
         followerNames.has(
           user.username
@@ -137,19 +168,33 @@ export function analyzeInstagram(
 
 
 
-  /*
-    Al momento gli inattivi
-    coincidono con gli utenti
-    esclusi manualmente.
-
-    In seguito aggiungeremo:
-    - profili senza attività
-    - profili eliminati
-    - segnali dall'export Instagram
-  */
 
   const possibleInactive =
-    excludedUsers;
+    following.filter(
+      user => {
+
+        const name =
+          user.username.toLowerCase();
+
+
+        return (
+
+          name.length > 25
+
+          ||
+
+          name.includes("inactive")
+
+          ||
+
+          name.includes("deleted")
+
+        );
+
+      }
+    );
+
+
 
 
 
@@ -161,8 +206,7 @@ export function analyzeInstagram(
     followers,
 
 
-    following:
-      cleanFollowing,
+    following,
 
 
 
@@ -175,17 +219,23 @@ export function analyzeInstagram(
 
 
     pendingRequests:
-      data.pendingRequests,
+      uniqueUsers(
+        data.pendingRequests
+      ),
 
 
 
     receivedRequests:
-      data.receivedRequests,
+      uniqueUsers(
+        data.receivedRequests
+      ),
 
 
 
     recentlyUnfollowed:
-      data.recentlyUnfollowed,
+      uniqueUsers(
+        data.recentlyUnfollowed
+      ),
 
 
 
@@ -202,19 +252,16 @@ export function analyzeInstagram(
 
 
 
-    // following effettivi dopo esclusioni
     followingCount:
-      cleanFollowing.length,
-
-
-
-    // following originali dall'export
-    originalFollowingCount:
       following.length,
 
 
 
-    // utenti esclusi manualmente
+    originalFollowingCount:
+      originalFollowing.length,
+
+
+
     excludedCount:
       excludedUsers.length,
 
@@ -238,7 +285,7 @@ export function analyzeInstagram(
     inactiveCount:
       possibleInactive.length
 
-  };
 
+  };
 
 }
