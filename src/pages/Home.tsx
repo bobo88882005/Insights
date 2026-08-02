@@ -9,6 +9,8 @@ import {
   Upload
 } from "lucide-react";
 
+import UserList from "../components/lists/UserList";
+import SectionCard from "../components/ui/SectionCard";
 import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
 
 
@@ -29,9 +31,7 @@ export default function Home() {
 
 
   function openFilePicker() {
-
     fileInput.current?.click();
-
   }
 
 
@@ -61,11 +61,18 @@ export default function Home() {
 
       <section>
 
-        <h2 className="text-3xl font-bold">
+        <h2 className="
+          text-3xl
+          font-bold
+        ">
           Instagram Insights
         </h2>
 
-        <p className="text-gray-400 mt-2">
+
+        <p className="
+          text-gray-400
+          mt-2
+        ">
           Analizza followers e following dal tuo export Instagram.
         </p>
 
@@ -122,6 +129,7 @@ export default function Home() {
 
 
 
+
       <section className="
         rounded-xl
         border
@@ -151,7 +159,10 @@ export default function Home() {
           <Upload size={40}/>
 
 
-          <h3 className="text-xl font-semibold">
+          <h3 className="
+            text-xl
+            font-semibold
+          ">
             Carica il tuo export Instagram
           </h3>
 
@@ -179,10 +190,13 @@ export default function Home() {
           </button>
 
 
+
           {
             error &&
             (
-              <p className="text-red-400">
+              <p className="
+                text-red-400
+              ">
                 {error}
               </p>
             )
@@ -195,11 +209,68 @@ export default function Home() {
       </section>
 
 
+
+
+
+      {
+        analysis &&
+        (
+
+          <section className="
+            grid
+            md:grid-cols-2
+            gap-4
+          ">
+
+
+            <SectionCard
+              title="Non ricambiano"
+              count={
+                analysis.notFollowingBackCount
+              }
+            >
+
+              <UserList
+                title=""
+                users={
+                  analysis.notFollowingBack
+                }
+              />
+
+            </SectionCard>
+
+
+
+            <SectionCard
+              title="Possibili inattivi"
+              count={
+                analysis.inactiveCount
+              }
+            >
+
+              <UserList
+                title=""
+                users={
+                  analysis.possibleInactive
+                }
+              />
+
+            </SectionCard>
+
+
+          </section>
+
+        )
+      }
+
+
+
     </div>
 
   );
 
 }
+
 
 
 
@@ -234,12 +305,18 @@ function StatCard({
       </div>
 
 
-      <div className="text-2xl font-bold">
+      <div className="
+        text-2xl
+        font-bold
+      ">
         {value}
       </div>
 
 
-      <div className="text-sm text-gray-400">
+      <div className="
+        text-sm
+        text-gray-400
+      ">
         {title}
       </div>
 
