@@ -9,8 +9,6 @@ interface Props {
 
   count:number;
 
-  active?:boolean;
-
   onClick?:()=>void;
 
 }
@@ -23,8 +21,6 @@ export default function SettingRow({
 
   count,
 
-  active = false,
-
   onClick
 
 }:Props){
@@ -36,73 +32,83 @@ export default function SettingRow({
 
       onClick={onClick}
 
-      className={`
+      className="
         w-full
         flex
         items-center
         justify-between
-        px-4
+        px-3
         py-3
         rounded-xl
         transition
-        ${
-          active
-          ? "bg-white/10"
-          : "hover:bg-white/5"
-        }
-      `}
+        active:bg-white/10
+      "
 
     >
 
 
-      <div className="
-        flex
-        items-center
-        gap-3
-      ">
 
-
-        <span className="
+      <span
+        className="
           text-[15px]
-          font-medium
           text-white
-        ">
-          {title}
-        </span>
+        "
+      >
+
+        {title}
+
+      </span>
 
 
-      </div>
 
 
 
-      <div className="
-        flex
-        items-center
-        gap-2
-      ">
+      <div
+        className="
+          flex
+          items-center
+          gap-2
+        "
+      >
 
 
-        <span className="
-          text-xs
-          px-2
-          py-1
-          rounded-full
-          bg-white/10
-          text-gray-300
-        ">
+
+        <span
+
+          className="
+            min-w-[26px]
+            text-center
+            text-xs
+            text-gray-300
+            bg-white/10
+            rounded-full
+            px-2
+            py-1
+          "
+
+        >
+
           {count}
+
         </span>
+
+
 
 
         <ChevronRight
-          size={16}
+
+          size={17}
+
           className="
             text-gray-500
           "
+
         />
 
 
+
       </div>
+
 
 
     </button>
