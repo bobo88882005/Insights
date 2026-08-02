@@ -9,6 +9,7 @@ import {
 } from "../types/instagram";
 
 
+
 function mergeUsers(
   current: InstagramUser[],
   incoming: InstagramUser[]
@@ -16,6 +17,7 @@ function mergeUsers(
 
   const map =
     new Map<string, InstagramUser>();
+
 
   [
     ...current,
@@ -29,9 +31,13 @@ function mergeUsers(
 
   });
 
-  return Array.from(map.values());
+
+  return Array.from(
+    map.values()
+  );
 
 }
+
 
 
 
@@ -53,24 +59,42 @@ null {
 
   if (
     name.includes("followers")
-  )
+  ) {
+
     return "followers";
+
+  }
+
 
 
 
   if (
     name.includes("following")
-  )
+    ||
+    name.includes("relationships_following")
+  ) {
+
     return "following";
+
+  }
+
 
 
 
   if (
     name.includes("follow_requests")
     &&
-    name.includes("sent")
-  )
+    (
+      name.includes("sent")
+      ||
+      name.includes("outgoing")
+    )
+  ) {
+
     return "pending";
+
+  }
+
 
 
 
@@ -82,8 +106,12 @@ null {
       ||
       name.includes("you")
     )
-  )
+  ) {
+
     return "received";
+
+  }
+
 
 
 
@@ -91,8 +119,11 @@ null {
     name.includes("recently_unfollowed")
     ||
     name.includes("unfollowed")
-  )
+  ) {
+
     return "recentlyUnfollowed";
+
+  }
 
 
 
@@ -103,9 +134,11 @@ null {
 
 
 
+
 export async function readInstagramZip(
   file: File
 ): Promise<ParsedInstagramData> {
+
 
 
   const zip =
@@ -113,15 +146,21 @@ export async function readInstagramZip(
 
 
 
+
   const result: ParsedInstagramData = {
 
     followers: [],
+
     following: [],
+
     pendingRequests: [],
+
     receivedRequests: [],
+
     recentlyUnfollowed: []
 
   };
+
 
 
 
@@ -131,12 +170,20 @@ export async function readInstagramZip(
   ) {
 
 
+
     const item =
       zip.files[filename];
 
 
-    if(item.dir)
+
+    if (
+      item.dir
+    ) {
+
       continue;
+
+    }
+
 
 
 
@@ -145,8 +192,15 @@ export async function readInstagramZip(
 
 
 
-    if(!type)
+    if (
+      !type
+    ) {
+
       continue;
+
+    }
+
+
 
 
 
@@ -157,13 +211,21 @@ export async function readInstagramZip(
 
 
 
-      if(
-        filename.endsWith(".html")
+      const lower =
+        filename.toLowerCase();
+
+
+
+
+      if (
+        lower.endsWith(".html")
       ) {
+
 
 
         const html =
           await item.async("string");
+
 
 
         users =
@@ -174,19 +236,23 @@ export async function readInstagramZip(
               : "followers"
           );
 
-
       }
 
 
-      else if(
-        filename.endsWith(".json")
+
+
+
+      else if (
+        lower.endsWith(".json")
       ) {
+
 
 
         const json =
           JSON.parse(
             await item.async("string")
           );
+
 
 
         users =
@@ -216,6 +282,7 @@ export async function readInstagramZip(
 
 
 
+
         case "following":
 
           result.following =
@@ -225,6 +292,7 @@ export async function readInstagramZip(
             );
 
           break;
+
 
 
 
@@ -240,6 +308,7 @@ export async function readInstagramZip(
 
 
 
+
         case "received":
 
           result.receivedRequests =
@@ -249,6 +318,7 @@ export async function readInstagramZip(
             );
 
           break;
+
 
 
 
@@ -262,22 +332,28 @@ export async function readInstagramZip(
 
           break;
 
+
       }
+
 
 
     }
     catch(error) {
 
+
       console.warn(
-        "Errore lettura:",
+        "Errore lettura file:",
         filename,
         error
       );
+
 
     }
 
 
   }
+
+
 
 
   return result;
