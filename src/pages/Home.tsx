@@ -4,22 +4,23 @@ import {
   Users,
   UserMinus,
   UserX,
-  Upload,
-  UserCheck,
-  Clock,
-  UserRoundX
+  Upload
 } from "lucide-react";
 
 import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
 
 import UserList from "../components/lists/UserList";
 import CollapsibleCard from "../components/ui/CollapsibleCard";
+import Badge from "../components/ui/Badge";
+import ProfileScore from "../components/dashboard/ProfileScore";
 
 
 export default function Home() {
 
+
   const fileInput =
     useRef<HTMLInputElement>(null);
+
 
 
   const {
@@ -31,6 +32,8 @@ export default function Home() {
 
 
 
+
+
   function openFilePicker() {
 
     fileInput.current?.click();
@@ -39,9 +42,13 @@ export default function Home() {
 
 
 
+
+
+
   async function handleFile(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
+
 
     const file =
       event.target.files?.[0];
@@ -53,7 +60,11 @@ export default function Home() {
 
     await uploadZip(file);
 
+
   }
+
+
+
 
 
 
@@ -61,18 +72,13 @@ export default function Home() {
   return (
 
     <div className="
-      max-w-xl
-      mx-auto
-      px-4
+      space-y-5
       pb-10
-      space-y-6
     ">
 
 
 
-      <header className="
-        pt-6
-      ">
+      <div>
 
         <h1 className="
           text-3xl
@@ -85,13 +91,43 @@ export default function Home() {
 
         <p className="
           text-gray-400
+          text-sm
           mt-1
         ">
-          Analisi intelligente del profilo
+          Analisi followers e following
         </p>
 
+      </div>
 
-      </header>
+
+
+
+
+
+      {
+        analysis &&
+        (
+
+          <ProfileScore
+
+            score={
+              analysis.profileScore
+            }
+
+            reciprocal={
+              analysis.reciprocalPercentage
+            }
+
+            notFollowingBack={
+              analysis.notFollowingBackPercentage
+            }
+
+          />
+
+        )
+      }
+
+
 
 
 
@@ -113,10 +149,12 @@ export default function Home() {
           }
 
           icon={
-            <Users />
+            <Users size={18}/>
           }
 
         />
+
+
 
 
 
@@ -128,12 +166,33 @@ export default function Home() {
             analysis?.followingCount ?? 0
           }
 
+          subtitle={
+            analysis
+              ? `${analysis.excludedCount} esclusi`
+              : ""
+          }
+
           icon={
-            <UserCheck />
+            <Users size={18}/>
           }
 
         />
 
+
+      </div>
+
+
+
+
+
+
+
+
+      <div className="
+        grid
+        grid-cols-2
+        gap-3
+      ">
 
 
         <StatCard
@@ -145,10 +204,12 @@ export default function Home() {
           }
 
           icon={
-            <UserMinus />
+            <UserMinus size={18}/>
           }
 
         />
+
+
 
 
 
@@ -161,7 +222,7 @@ export default function Home() {
           }
 
           icon={
-            <UserX />
+            <UserX size={18}/>
           }
 
         />
@@ -173,13 +234,16 @@ export default function Home() {
 
 
 
+
+
+
       <div className="
         rounded-3xl
-        bg-white/5
         border
         border-white/10
+        bg-white/[0.06]
         backdrop-blur-xl
-        p-5
+        p-4
       ">
 
 
@@ -200,41 +264,43 @@ export default function Home() {
 
 
 
+
         <button
 
           onClick={openFilePicker}
 
           className="
             w-full
+            flex
+            justify-center
+            items-center
+            gap-2
             rounded-2xl
             py-4
-            flex
-            items-center
-            justify-center
-            gap-3
-            font-semibold
             bg-gradient-to-r
             from-purple-500
             via-pink-500
             to-orange-400
-            shadow-lg
-            active:scale-95
+            font-semibold
+            active:scale-[0.98]
             transition
           "
 
         >
 
-          <Upload size={20}/>
+          <Upload size={18}/>
 
 
           {
             loading
-              ? "Analisi in corso..."
-              : "Importa archivio Instagram"
+              ? "Analisi..."
+              : "Carica ZIP Instagram"
           }
 
 
         </button>
+
+
 
 
 
@@ -245,7 +311,7 @@ export default function Home() {
             <p className="
               text-red-400
               text-sm
-              mt-4
+              mt-3
             ">
               {error}
             </p>
@@ -254,7 +320,9 @@ export default function Home() {
         }
 
 
+
       </div>
+
 
 
 
@@ -267,23 +335,17 @@ export default function Home() {
         (
 
           <div className="
-            space-y-4
+            space-y-3
           ">
 
 
 
-
-
-            <Section
+            <CollapsibleCard
 
               title="Non ricambiano"
 
               count={
                 analysis.notFollowingBackCount
-              }
-
-              icon={
-                <UserMinus size={18}/>
               }
 
             >
@@ -298,7 +360,7 @@ export default function Home() {
 
               />
 
-            </Section>
+            </CollapsibleCard>
 
 
 
@@ -306,17 +368,12 @@ export default function Home() {
 
 
 
-
-            <Section
+            <CollapsibleCard
 
               title="Possibili inattivi"
 
               count={
                 analysis.inactiveCount
-              }
-
-              icon={
-                <UserX size={18}/>
               }
 
             >
@@ -331,7 +388,7 @@ export default function Home() {
 
               />
 
-            </Section>
+            </CollapsibleCard>
 
 
 
@@ -340,17 +397,12 @@ export default function Home() {
 
 
 
-
-            <Section
+            <CollapsibleCard
 
               title="Followers"
 
               count={
                 analysis.followersCount
-              }
-
-              icon={
-                <Users size={18}/>
               }
 
             >
@@ -367,7 +419,7 @@ export default function Home() {
 
               />
 
-            </Section>
+            </CollapsibleCard>
 
 
 
@@ -376,17 +428,12 @@ export default function Home() {
 
 
 
-
-            <Section
+            <CollapsibleCard
 
               title="Following"
 
               count={
                 analysis.followingCount
-              }
-
-              icon={
-                <UserCheck size={18}/>
               }
 
             >
@@ -403,7 +450,7 @@ export default function Home() {
 
               />
 
-            </Section>
+            </CollapsibleCard>
 
 
 
@@ -413,16 +460,12 @@ export default function Home() {
 
 
 
-            <Section
+            <CollapsibleCard
 
               title="Richieste ricevute"
 
               count={
                 analysis.receivedRequests.length
-              }
-
-              icon={
-                <Clock size={18}/>
               }
 
             >
@@ -437,7 +480,7 @@ export default function Home() {
 
               />
 
-            </Section>
+            </CollapsibleCard>
 
 
 
@@ -446,17 +489,12 @@ export default function Home() {
 
 
 
-
-            <Section
+            <CollapsibleCard
 
               title="Pending requests"
 
               count={
                 analysis.pendingRequests.length
-              }
-
-              icon={
-                <Clock size={18}/>
               }
 
             >
@@ -471,7 +509,7 @@ export default function Home() {
 
               />
 
-            </Section>
+            </CollapsibleCard>
 
 
 
@@ -480,17 +518,12 @@ export default function Home() {
 
 
 
-
-            <Section
+            <CollapsibleCard
 
               title="Recently unfollowed"
 
               count={
                 analysis.recentlyUnfollowed.length
-              }
-
-              icon={
-                <UserRoundX size={18}/>
               }
 
             >
@@ -505,7 +538,7 @@ export default function Home() {
 
               />
 
-            </Section>
+            </CollapsibleCard>
 
 
 
@@ -514,7 +547,6 @@ export default function Home() {
           </div>
 
         )
-
       }
 
 
@@ -531,143 +563,6 @@ export default function Home() {
 
 
 
-function Section({
-
-  title,
-
-  count,
-
-  icon,
-
-  children
-
-}:{
-
-  title:string;
-
-  count:number;
-
-  icon:React.ReactNode;
-
-  children:React.ReactNode;
-
-}) {
-
-
-  return (
-
-    <div className="
-
-      rounded-3xl
-
-      overflow-hidden
-
-      bg-white/5
-
-      border
-
-      border-white/10
-
-      backdrop-blur-xl
-
-    ">
-
-
-      <div className="
-
-        px-5
-
-        py-4
-
-        flex
-
-        items-center
-
-        justify-between
-
-      ">
-
-
-        <div className="
-
-          flex
-
-          items-center
-
-          gap-3
-
-        ">
-
-          <div className="
-
-            text-pink-400
-
-          ">
-
-            {icon}
-
-          </div>
-
-
-          <span className="
-
-            font-semibold
-
-          ">
-
-            {title}
-
-          </span>
-
-
-        </div>
-
-
-
-        <span className="
-
-          text-sm
-
-          text-gray-400
-
-        ">
-
-          {count}
-
-        </span>
-
-
-
-      </div>
-
-
-
-      <CollapsibleCard
-
-        title=""
-
-        count={0}
-
-      >
-
-        {children}
-
-      </CollapsibleCard>
-
-
-    </div>
-
-  );
-
-}
-
-
-
-
-
-
-
-
 
 function StatCard({
 
@@ -675,13 +570,17 @@ function StatCard({
 
   value,
 
+  subtitle,
+
   icon
 
-}:{
+}: {
 
   title:string;
 
   value:number;
+
+  subtitle?:string;
 
   icon:React.ReactNode;
 
@@ -691,26 +590,17 @@ function StatCard({
   return (
 
     <div className="
-
       rounded-3xl
-
-      p-4
-
-      bg-white/5
-
       border
-
       border-white/10
-
+      bg-white/[0.06]
       backdrop-blur-xl
-
+      p-4
     ">
 
 
       <div className="
-
         text-pink-400
-
       ">
 
         {icon}
@@ -719,14 +609,11 @@ function StatCard({
 
 
 
+
       <div className="
-
-        text-3xl
-
+        text-2xl
         font-bold
-
         mt-3
-
       ">
 
         {value}
@@ -735,17 +622,36 @@ function StatCard({
 
 
 
+
       <div className="
-
-        text-sm
-
+        text-xs
         text-gray-400
-
       ">
 
         {title}
 
       </div>
+
+
+
+
+      {
+        subtitle &&
+        (
+
+          <div className="
+            text-[11px]
+            text-gray-500
+            mt-1
+          ">
+
+            {subtitle}
+
+          </div>
+
+        )
+      }
+
 
 
     </div>
