@@ -1,1 +1,1 @@
-import "./index.css";
+/// <reference types="vite/client" />
