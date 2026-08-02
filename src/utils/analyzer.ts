@@ -33,6 +33,13 @@ function uniqueUsers(
 
 
       if(
+        !username
+      )
+        return;
+
+
+
+      if(
         username.startsWith("__deleted__")
       )
         return;
@@ -65,12 +72,16 @@ function uniqueUsers(
 
 
 
-
 export function analyzeInstagram(
   data: ParsedInstagramData
 ): InstagramAnalysis {
 
 
+
+  /*
+    Pulizia dati importati
+    __deleted__ esclusi ovunque
+  */
 
 
   const followers =
@@ -136,6 +147,13 @@ export function analyzeInstagram(
 
 
 
+  /*
+    Esclusioni manuali
+
+    Questi utenti sono considerati
+    possibili inattivi
+  */
+
 
   const excludedUsers =
     following.filter(
@@ -163,6 +181,11 @@ export function analyzeInstagram(
 
 
 
+  /*
+    Utenti che segui ma
+    che non ti seguono
+  */
+
 
   const notFollowingBack =
     cleanFollowing.filter(
@@ -177,6 +200,11 @@ export function analyzeInstagram(
 
 
 
+
+  /*
+    Utenti che ti seguono
+    ma che tu non segui
+  */
 
 
   const youDontFollowBack =
@@ -193,6 +221,10 @@ export function analyzeInstagram(
 
 
 
+  /*
+    Follow reciproci
+  */
+
 
   const reciprocal =
     cleanFollowing.filter(
@@ -208,9 +240,16 @@ export function analyzeInstagram(
 
 
 
+
+  /*
+    Possibili inattivi
+
+    SOLO esclusioni manuali
+  */
+
+
   const possibleInactive =
     excludedUsers;
-
 
 
 
