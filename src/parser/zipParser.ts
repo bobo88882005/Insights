@@ -15,6 +15,7 @@ function mergeUsers(
   incoming: InstagramUser[]
 ): InstagramUser[] {
 
+
   const map =
     new Map<string, InstagramUser>();
 
@@ -24,12 +25,35 @@ function mergeUsers(
     ...incoming
   ].forEach(user => {
 
+
+    const username =
+      user.username
+        .toLowerCase()
+        .trim();
+
+
+
+    if (
+      username.startsWith("__deleted__")
+    ) {
+
+      return;
+
+    }
+
+
+
     map.set(
-      user.username.toLowerCase(),
-      user
+      username,
+      {
+        ...user,
+        username
+      }
     );
 
+
   });
+
 
 
   return Array.from(
@@ -37,6 +61,8 @@ function mergeUsers(
   );
 
 }
+
+
 
 
 
@@ -61,6 +87,7 @@ null {
 
 
 
+
   if (
     name.includes("following")
     &&
@@ -70,6 +97,7 @@ null {
     return "following";
 
   }
+
 
 
 
@@ -85,6 +113,7 @@ null {
 
 
 
+
   if (
     name.includes("pending_follow_requests")
   ) {
@@ -92,6 +121,7 @@ null {
     return "pending";
 
   }
+
 
 
 
@@ -107,6 +137,7 @@ null {
 
 
 
+
   if (
     name.includes("recently_unfollowed")
   ) {
@@ -117,9 +148,13 @@ null {
 
 
 
+
+
   return null;
 
 }
+
+
 
 
 
@@ -141,17 +176,26 @@ export async function readInstagramZip(
 
   const result: ParsedInstagramData = {
 
+
     followers: [],
+
 
     following: [],
 
+
     pendingRequests: [],
+
 
     receivedRequests: [],
 
+
     recentlyUnfollowed: []
 
+
   };
+
+
+
 
 
 
@@ -185,12 +229,15 @@ export async function readInstagramZip(
 
 
 
+
     console.log(
       "FILE TROVATO:",
       filename,
       "TIPO:",
       type
     );
+
+
 
 
 
@@ -206,13 +253,18 @@ export async function readInstagramZip(
 
 
 
+
+
     try {
 
 
       let users: InstagramUser[] = [];
 
+
+
       const lower =
         filename.toLowerCase();
+
 
 
 
@@ -223,8 +275,10 @@ export async function readInstagramZip(
       ) {
 
 
+
         const html =
           await item.async("string");
+
 
 
         console.log(
@@ -239,10 +293,9 @@ export async function readInstagramZip(
         users =
           extractUsersFromHTML(
             html,
-            type === "following"
-              ? "following"
-              : "followers"
+            type
           );
+
 
 
       }
@@ -251,9 +304,12 @@ export async function readInstagramZip(
 
 
 
+
+
       else if (
         lower.endsWith(".json")
       ) {
+
 
 
         const json =
@@ -266,12 +322,13 @@ export async function readInstagramZip(
         users =
           extractUsersFromJSON(
             json,
-            type === "following"
-              ? "following"
-              : "followers"
+            type
           );
 
+
       }
+
+
 
 
 
@@ -287,11 +344,15 @@ export async function readInstagramZip(
 
 
 
+
+
+
       switch(type) {
 
 
 
         case "followers":
+
 
           result.followers =
             mergeUsers(
@@ -299,12 +360,15 @@ export async function readInstagramZip(
               users
             );
 
+
           break;
 
 
 
 
+
         case "following":
+
 
           result.following =
             mergeUsers(
@@ -312,12 +376,15 @@ export async function readInstagramZip(
               users
             );
 
+
           break;
 
 
 
 
+
         case "pending":
+
 
           result.pendingRequests =
             mergeUsers(
@@ -325,12 +392,15 @@ export async function readInstagramZip(
               users
             );
 
+
           break;
 
 
 
 
+
         case "received":
+
 
           result.receivedRequests =
             mergeUsers(
@@ -338,18 +408,22 @@ export async function readInstagramZip(
               users
             );
 
+
           break;
+
 
 
 
 
         case "recentlyUnfollowed":
 
+
           result.recentlyUnfollowed =
             mergeUsers(
               result.recentlyUnfollowed,
               users
             );
+
 
           break;
 
@@ -358,12 +432,16 @@ export async function readInstagramZip(
 
 
 
+
+
+
     }
+
     catch(error) {
 
 
       console.error(
-        "ERRORE LETTURA:",
+        "ERRORE LETTURA FILE:",
         filename,
         error
       );
@@ -372,7 +450,9 @@ export async function readInstagramZip(
     }
 
 
+
   }
+
 
 
 
@@ -385,20 +465,26 @@ export async function readInstagramZip(
       followers:
         result.followers.length,
 
+
       following:
         result.following.length,
+
 
       pending:
         result.pendingRequests.length,
 
+
       received:
         result.receivedRequests.length,
 
-      unfollowed:
+
+      recentlyUnfollowed:
         result.recentlyUnfollowed.length
 
     }
   );
+
+
 
 
 
