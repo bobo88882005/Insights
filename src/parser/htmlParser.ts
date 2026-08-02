@@ -1,8 +1,9 @@
 import { InstagramUser } from "../types/instagram";
 
 
+
 function cleanUsername(
-  value:string
+  value: string
 ): string | null {
 
 
@@ -10,15 +11,18 @@ function cleanUsername(
     value
       .trim()
       .toLowerCase()
-      .replace("@","")
-      .replace("/","");
+      .replace(/^@/, "")
+      .replace(/^https?:\/\/(www\.)?instagram\.com\//, "")
+      .replace(/[\/?#].*$/, "");
 
 
 
   if (
     !/^[a-z0-9._]+$/.test(username)
   ) {
+
     return null;
+
   }
 
 
@@ -29,8 +33,9 @@ function cleanUsername(
 
 
 
+
 function extractTimestamp(
-  text:string
+  text: string
 ): Date | null {
 
 
@@ -40,10 +45,11 @@ function extractTimestamp(
     );
 
 
+  if (!match) {
 
-  if (!match)
     return null;
 
+  }
 
 
   return new Date(
@@ -55,12 +61,14 @@ function extractTimestamp(
 
 
 
+
 export function extractUsersFromHTML(
-  html:string,
+  html: string,
   source:
     "followers" |
     "following"
 ): InstagramUser[] {
+
 
 
   const users =
@@ -70,61 +78,58 @@ export function extractUsersFromHTML(
 
   const decoded =
     html
-      .replace(/&quot;/g,'"')
-      .replace(/&#x27;/g,"'")
-      .replace(/&amp;/g,"&");
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&amp;/g, "&");
 
 
 
-  const links =
-    decoded.match(
-      /instagram\.com\/[a-zA-Z0-9._]+/gi
+
+
+  // Estrae dagli href Instagram
+
+  const hrefMatches =
+    decoded.matchAll(
+      /href=["']([^"']*instagram\.com\/[^"']+)["']/gi
     );
 
 
 
-  if (links) {
+  for (
+    const match of hrefMatches
+  ) {
 
 
-    links.forEach(link=>{
-
-
-      const username =
-        cleanUsername(
-          link.replace(
-            /instagram\.com\//i,
-            ""
-          )
-        );
+    const username =
+      cleanUsername(
+        match[1]
+      );
 
 
 
-      if (username) {
+    if (username) {
 
 
-        users.set(
+      users.set(
+        username,
+        {
+
           username,
-          {
-            username,
 
-            profileUrl:
-              `https://www.instagram.com/${username}/`,
+          profileUrl:
+            `https://www.instagram.com/${username}/`,
 
-            followedAt:
-              extractTimestamp(
-                decoded
-              ),
+          followedAt:
+            extractTimestamp(
+              match[0]
+            ),
 
-            source
-          }
-        );
+          source
 
+        }
+      );
 
-      }
-
-
-    });
-
+    }
 
   }
 
@@ -132,55 +137,116 @@ export function extractUsersFromHTML(
 
 
 
-  const h2 =
+
+
+  // Estrae eventuali username dentro h2
+
+  const headings =
     decoded.match(
       /<h2[^>]*>(.*?)<\/h2>/gis
     );
 
 
 
-  if (h2) {
+  if (headings) {
 
 
-    h2.forEach(item=>{
+    headings.forEach(
+      block => {
 
 
-      const username =
-        cleanUsername(
-          item.replace(
-            /<[^>]+>/g,
-            ""
-          )
-        );
+        const username =
+          cleanUsername(
+            block.replace(
+              /<[^>]+>/g,
+              ""
+            )
+          );
 
 
 
-      if (username) {
+        if (username) {
 
 
-        users.set(
-          username,
-          {
+          users.set(
             username,
+            {
 
-            profileUrl:
-              `https://www.instagram.com/${username}/`,
+              username,
 
-            followedAt:
-              extractTimestamp(
-                item
-              ),
+              profileUrl:
+                `https://www.instagram.com/${username}/`,
 
-            source
-          }
-        );
+              followedAt:
+                extractTimestamp(
+                  block
+                ),
+
+              source
+
+            }
+          );
+
+
+        }
 
 
       }
+    );
+
+  }
 
 
-    });
 
+
+
+
+
+  // Fallback: cerca testo username nei link senza URL completo
+
+  const plainLinks =
+    decoded.matchAll(
+      /<a[^>]*>(.*?)<\/a>/gis
+    );
+
+
+
+  for (
+    const match of plainLinks
+  ) {
+
+
+    const username =
+      cleanUsername(
+        match[1].replace(
+          /<[^>]+>/g,
+          ""
+        )
+      );
+
+
+
+    if (username) {
+
+
+      users.set(
+        username,
+        {
+
+          username,
+
+          profileUrl:
+            `https://www.instagram.com/${username}/`,
+
+          followedAt:
+            null,
+
+          source
+
+        }
+      );
+
+    }
 
   }
 
