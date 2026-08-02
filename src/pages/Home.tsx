@@ -15,7 +15,6 @@ import UserList from "../components/lists/UserList";
 import SettingRow from "../components/ui/SettingRow";
 
 
-
 type MainTab =
   | "followers"
   | "following"
@@ -24,7 +23,7 @@ type MainTab =
 
 
 
-export default function Home(){
+export default function Home() {
 
 
   const fileInput =
@@ -41,14 +40,14 @@ export default function Home(){
 
 
 
-  const [activeTab,setActiveTab] =
+  const [activeTab, setActiveTab] =
     useState<MainTab>("followers");
 
 
 
 
 
-  function openPicker(){
+  function openPicker() {
 
     fileInput.current?.click();
 
@@ -59,20 +58,21 @@ export default function Home(){
 
 
   async function handleFile(
-    e:React.ChangeEvent<HTMLInputElement>
-  ){
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
 
     const file =
-      e.target.files?.[0];
+      event.target.files?.[0];
 
 
-    if(file){
+    if (!file)
+      return;
 
-      await uploadZip(file);
 
-    }
+    await uploadZip(file);
 
   }
+
 
 
 
@@ -81,27 +81,31 @@ export default function Home(){
   const tabs = [
 
     {
-      id:"followers",
-      title:"Followers",
-      count:analysis?.followersCount ?? 0
+      id: "followers",
+      title: "Followers",
+      count:
+        analysis?.followersCount ?? 0
     },
 
     {
-      id:"following",
-      title:"Following",
-      count:analysis?.followingCount ?? 0
+      id: "following",
+      title: "Following",
+      count:
+        analysis?.followingCount ?? 0
     },
 
     {
-      id:"notFollowingBack",
-      title:"Non ricambiano",
-      count:analysis?.notFollowingBackCount ?? 0
+      id: "notFollowingBack",
+      title: "Non ricambiano",
+      count:
+        analysis?.notFollowingBackCount ?? 0
     },
 
     {
-      id:"pending",
-      title:"Pending",
-      count:analysis?.pendingRequests.length ?? 0
+      id: "pending",
+      title: "Pending",
+      count:
+        analysis?.pendingRequests.length ?? 0
     }
 
   ] as const;
@@ -110,27 +114,39 @@ export default function Home(){
 
 
 
-  function currentUsers(){
 
-    if(!analysis)
+
+  function currentUsers() {
+
+
+    if (!analysis)
       return [];
 
 
-    switch(activeTab){
+
+    switch (activeTab) {
+
 
       case "followers":
+
         return analysis.followers;
 
 
+
       case "following":
+
         return analysis.following;
 
 
+
       case "notFollowingBack":
+
         return analysis.notFollowingBack;
 
 
+
       case "pending":
+
         return analysis.pendingRequests;
 
 
@@ -144,29 +160,37 @@ export default function Home(){
 
 
 
+
   return (
 
-    <div className="
-      space-y-5
-      pb-10
-    ">
+    <div
+      className="
+        space-y-5
+        pb-10
+      "
+    >
+
 
 
       <div>
 
-        <h1 className="
-          text-2xl
-          font-bold
-        ">
+        <h1
+          className="
+            text-2xl
+            font-bold
+          "
+        >
           Instagram Insights
         </h1>
 
 
-        <p className="
-          text-sm
-          text-gray-500
-        ">
-          Analisi account
+        <p
+          className="
+            text-sm
+            text-gray-500
+          "
+        >
+          Analisi followers e following
         </p>
 
       </div>
@@ -175,71 +199,93 @@ export default function Home(){
 
 
 
-      <div className="
-        rounded-2xl
-        bg-white/5
-        border
-        border-white/10
-        p-1
-      ">
 
 
-        <div className="
-          grid
-          grid-cols-4
-          gap-1
-        ">
+
+      <div
+        className="
+          rounded-2xl
+          bg-white/5
+          border
+          border-white/10
+          backdrop-blur-xl
+          p-1
+        "
+      >
 
 
-        {
-          tabs.map(tab=>(
+        <div
+          className="
+            grid
+            grid-cols-4
+            gap-1
+          "
+        >
 
 
-            <button
+          {
+            tabs.map(tab => (
 
-              key={tab.id}
+              <button
 
-              onClick={()=>
-                setActiveTab(tab.id)
-              }
+                key={tab.id}
 
-              className={`
-                rounded-xl
-                py-3
-                px-1
-                text-xs
-                transition
-
-                ${
-                  activeTab===tab.id
-                  ?
-                  "bg-white/15 text-white"
-                  :
-                  "text-gray-400"
+                onClick={() =>
+                  setActiveTab(tab.id)
                 }
 
-              `}
+                className={`
+                  rounded-xl
+                  py-3
+                  px-1
+                  text-xs
+                  transition-all
 
-            >
+                  ${
+                    activeTab === tab.id
 
-              <div>
-                {tab.title}
-              </div>
+                    ?
+
+                    "
+                    bg-white/15
+                    text-white
+                    shadow-sm
+                    "
+
+                    :
+
+                    "
+                    text-gray-400
+                    hover:text-white
+                    "
+
+                  }
+
+                `}
+
+              >
 
 
-              <div className="
-                text-[11px]
-                mt-1
-              ">
-                {tab.count}
-              </div>
+                <div>
+                  {tab.title}
+                </div>
 
 
-            </button>
+                <div
+                  className="
+                    text-[11px]
+                    mt-1
+                    opacity-70
+                  "
+                >
+                  {tab.count}
+                </div>
 
 
-          ))
-        }
+              </button>
+
+            ))
+          }
 
 
         </div>
@@ -253,23 +299,33 @@ export default function Home(){
 
 
 
-      <div className="
-        rounded-2xl
-        border
-        border-white/10
-        bg-white/5
-        p-4
-      ">
 
+
+      <div
+
+        key={activeTab}
+
+        className="
+          rounded-2xl
+          border
+          border-white/10
+          bg-white/5
+          backdrop-blur-xl
+          p-4
+          animate-ios-in
+        "
+
+      >
 
         <UserList
 
           title=""
 
-          users={currentUsers()}
+          users={
+            currentUsers()
+          }
 
         />
-
 
       </div>
 
@@ -280,25 +336,35 @@ export default function Home(){
 
 
 
-      <div className="
-        rounded-2xl
-        border
-        border-white/10
-        bg-white/[0.03]
-        p-2
-      ">
+
+      <div
+
+        className="
+          rounded-2xl
+          border
+          border-white/10
+          bg-white/[0.03]
+          backdrop-blur-xl
+          p-2
+        "
+
+      >
 
 
-        <p className="
-          px-3
-          pt-2
-          pb-1
-          text-xs
-          uppercase
-          text-gray-500
-        ">
+        <p
+          className="
+            px-3
+            pt-2
+            pb-1
+            text-[11px]
+            uppercase
+            tracking-wide
+            text-gray-500
+          "
+        >
           Altri dati
         </p>
+
 
 
 
@@ -337,6 +403,7 @@ export default function Home(){
         />
 
 
+
       </div>
 
 
@@ -346,28 +413,35 @@ export default function Home(){
 
 
 
-      <div className="
-        rounded-2xl
-        border
-        border-white/10
-        bg-white/5
-        p-4
-      ">
+
+      <div
+
+        className="
+          rounded-2xl
+          border
+          border-white/10
+          bg-white/5
+          backdrop-blur-xl
+          p-4
+        "
+
+      >
 
 
         <input
 
           ref={fileInput}
 
-          hidden
-
           type="file"
 
           accept=".zip"
 
+          hidden
+
           onChange={handleFile}
 
         />
+
 
 
         <button
@@ -380,22 +454,33 @@ export default function Home(){
             py-3
             bg-gradient-to-r
             from-purple-500
-            to-pink-500
+            via-pink-500
+            to-orange-400
             font-semibold
+            active:scale-[0.98]
+            transition
           "
 
         >
 
           <Upload
             size={18}
-            className="inline mr-2"
+            className="
+              inline
+              mr-2
+            "
           />
+
 
           {
             loading
+
             ?
+
             "Analisi..."
+
             :
+
             "Carica ZIP Instagram"
           }
 
@@ -404,19 +489,26 @@ export default function Home(){
 
 
 
+
         {
           error &&
-          <p className="
-            mt-3
-            text-sm
-            text-red-400
-          ">
+
+          <p
+            className="
+              mt-3
+              text-sm
+              text-red-400
+            "
+          >
             {error}
           </p>
+
         }
 
 
       </div>
+
+
 
 
     </div>
