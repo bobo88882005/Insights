@@ -19,18 +19,24 @@ function uniqueUsers(
     new Map<string, InstagramUser>();
 
 
+
   users.forEach(user => {
 
 
     const username =
-      user.username.toLowerCase();
+      user.username
+        .toLowerCase()
+        .trim();
 
 
 
+    // Ignora profili eliminati da Instagram
     if (
       username.startsWith("__deleted__")
     ) {
+
       return;
+
     }
 
 
@@ -66,6 +72,12 @@ export function analyzeInstagram(
 
 
 
+  /*
+    Pulizia iniziale:
+    rimuove duplicati e profili __deleted__
+  */
+
+
   const followers =
     uniqueUsers(
       data.followers
@@ -81,6 +93,12 @@ export function analyzeInstagram(
 
 
 
+
+  /*
+    Esclusioni manuali
+  */
+
+
   const excludedUsers =
     originalFollowing.filter(
       user =>
@@ -93,6 +111,12 @@ export function analyzeInstagram(
 
 
 
+  /*
+    Following effettivo
+    senza esclusioni manuali
+  */
+
+
   const following =
     originalFollowing.filter(
       user =>
@@ -100,6 +124,7 @@ export function analyzeInstagram(
           user.username
         )
     );
+
 
 
 
@@ -129,6 +154,13 @@ export function analyzeInstagram(
 
 
 
+
+  /*
+    Utenti che segui
+    ma che non ti seguono
+  */
+
+
   const notFollowingBack =
     following.filter(
       user =>
@@ -140,6 +172,13 @@ export function analyzeInstagram(
 
 
 
+
+
+
+  /*
+    Utenti che ti seguono
+    ma che tu non segui
+  */
 
 
   const youDontFollowBack =
@@ -156,6 +195,11 @@ export function analyzeInstagram(
 
 
 
+  /*
+    Seguiti reciproci
+  */
+
+
   const reciprocal =
     following.filter(
       user =>
@@ -169,25 +213,39 @@ export function analyzeInstagram(
 
 
 
+
+  /*
+    Possibili inattivi:
+    prima versione basata su segnali
+    dell'username
+  */
+
+
   const possibleInactive =
     following.filter(
       user => {
 
-        const name =
+
+        const username =
           user.username.toLowerCase();
+
 
 
         return (
 
-          name.length > 25
+          username.length > 25
 
           ||
 
-          name.includes("inactive")
+          username.includes(
+            "inactive"
+          )
 
           ||
 
-          name.includes("deleted")
+          username.includes(
+            "deleted"
+          )
 
         );
 
@@ -200,10 +258,13 @@ export function analyzeInstagram(
 
 
 
+
   return {
 
 
+
     followers,
+
 
 
     following,
