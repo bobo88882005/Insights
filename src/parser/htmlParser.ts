@@ -33,7 +33,6 @@ function cleanUsername(
 
 
 
-
 function extractTimestamp(
   text: string
 ): Date | null {
@@ -45,11 +44,8 @@ function extractTimestamp(
     );
 
 
-  if (!match) {
-
+  if (!match)
     return null;
-
-  }
 
 
   return new Date(
@@ -65,8 +61,11 @@ function extractTimestamp(
 export function extractUsersFromHTML(
   html: string,
   source:
-    "followers" |
-    "following"
+    | "followers"
+    | "following"
+    | "pending"
+    | "received"
+    | "recentlyUnfollowed"
 ): InstagramUser[] {
 
 
@@ -86,9 +85,7 @@ export function extractUsersFromHTML(
 
 
 
-  // Estrae dagli href Instagram
-
-  const hrefMatches =
+  const links =
     decoded.matchAll(
       /href=["']([^"']*instagram\.com\/[^"']+)["']/gi
     );
@@ -96,7 +93,7 @@ export function extractUsersFromHTML(
 
 
   for (
-    const match of hrefMatches
+    const match of links
   ) {
 
 
@@ -138,26 +135,23 @@ export function extractUsersFromHTML(
 
 
 
-
-  // Estrae eventuali username dentro h2
-
-  const headings =
+  const h2 =
     decoded.match(
       /<h2[^>]*>(.*?)<\/h2>/gis
     );
 
 
 
-  if (headings) {
+  if (h2) {
 
 
-    headings.forEach(
-      block => {
+    h2.forEach(
+      item => {
 
 
         const username =
           cleanUsername(
-            block.replace(
+            item.replace(
               /<[^>]+>/g,
               ""
             )
@@ -179,14 +173,13 @@ export function extractUsersFromHTML(
 
               followedAt:
                 extractTimestamp(
-                  block
+                  item
                 ),
 
               source
 
             }
           );
-
 
         }
 
@@ -196,59 +189,6 @@ export function extractUsersFromHTML(
 
   }
 
-
-
-
-
-
-
-  // Fallback: cerca testo username nei link senza URL completo
-
-  const plainLinks =
-    decoded.matchAll(
-      /<a[^>]*>(.*?)<\/a>/gis
-    );
-
-
-
-  for (
-    const match of plainLinks
-  ) {
-
-
-    const username =
-      cleanUsername(
-        match[1].replace(
-          /<[^>]+>/g,
-          ""
-        )
-      );
-
-
-
-    if (username) {
-
-
-      users.set(
-        username,
-        {
-
-          username,
-
-          profileUrl:
-            `https://www.instagram.com/${username}/`,
-
-          followedAt:
-            null,
-
-          source
-
-        }
-      );
-
-    }
-
-  }
 
 
 
