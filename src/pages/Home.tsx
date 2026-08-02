@@ -1,12 +1,57 @@
 import {
+  useRef
+} from "react";
+
+import {
   Users,
   UserMinus,
   UserX,
   Upload
 } from "lucide-react";
 
+import { useInstagramAnalyzer } from "../hooks/useInstagramAnalyzer";
+
 
 export default function Home() {
+
+  const fileInput =
+    useRef<HTMLInputElement>(null);
+
+
+  const {
+    analysis,
+    loading,
+    error,
+    uploadZip
+  } =
+    useInstagramAnalyzer();
+
+
+
+  function openFilePicker() {
+
+    fileInput.current?.click();
+
+  }
+
+
+
+  async function handleFile(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+
+    const file =
+      event.target.files?.[0];
+
+
+    if (!file)
+      return;
+
+
+    await uploadZip(file);
+
+  }
+
 
 
   return (
@@ -16,17 +61,11 @@ export default function Home() {
 
       <section>
 
-        <h2 className="
-          text-3xl
-          font-bold
-        ">
+        <h2 className="text-3xl font-bold">
           Instagram Insights
         </h2>
 
-        <p className="
-          text-gray-400
-          mt-2
-        ">
+        <p className="text-gray-400 mt-2">
           Analizza followers e following dal tuo export Instagram.
         </p>
 
@@ -44,28 +83,36 @@ export default function Home() {
 
         <StatCard
           title="Followers"
-          value="0"
+          value={
+            analysis?.followersCount ?? 0
+          }
           icon={<Users />}
         />
 
 
         <StatCard
           title="Following"
-          value="0"
+          value={
+            analysis?.followingCount ?? 0
+          }
           icon={<Users />}
         />
 
 
         <StatCard
           title="Non ricambiano"
-          value="0"
+          value={
+            analysis?.notFollowingBackCount ?? 0
+          }
           icon={<UserMinus />}
         />
 
 
         <StatCard
           title="Possibili inattivi"
-          value="0"
+          value={
+            analysis?.inactiveCount ?? 0
+          }
           icon={<UserX />}
         />
 
@@ -84,6 +131,15 @@ export default function Home() {
       ">
 
 
+        <input
+          ref={fileInput}
+          type="file"
+          accept=".zip"
+          hidden
+          onChange={handleFile}
+        />
+
+
         <div className="
           flex
           flex-col
@@ -95,26 +151,42 @@ export default function Home() {
           <Upload size={40}/>
 
 
-          <h3 className="
-            text-xl
-            font-semibold
-          ">
+          <h3 className="text-xl font-semibold">
             Carica il tuo export Instagram
           </h3>
 
 
-          <button className="
-            px-5
-            py-3
-            rounded-full
-            bg-gradient-to-r
-            from-purple-500
-            via-pink-500
-            to-orange-400
-            font-semibold
-          ">
-            Seleziona ZIP
+          <button
+            onClick={openFilePicker}
+            className="
+              px-5
+              py-3
+              rounded-full
+              bg-gradient-to-r
+              from-purple-500
+              via-pink-500
+              to-orange-400
+              font-semibold
+            "
+          >
+
+            {
+              loading
+                ? "Analisi..."
+                : "Seleziona ZIP"
+            }
+
           </button>
+
+
+          {
+            error &&
+            (
+              <p className="text-red-400">
+                {error}
+              </p>
+            )
+          }
 
 
         </div>
@@ -131,13 +203,14 @@ export default function Home() {
 
 
 
+
 function StatCard({
   title,
   value,
   icon
 }: {
   title:string;
-  value:string;
+  value:number;
   icon:React.ReactNode;
 }) {
 
@@ -152,6 +225,7 @@ function StatCard({
       p-4
     ">
 
+
       <div className="
         text-pink-400
         mb-3
@@ -160,18 +234,12 @@ function StatCard({
       </div>
 
 
-      <div className="
-        text-2xl
-        font-bold
-      ">
+      <div className="text-2xl font-bold">
         {value}
       </div>
 
 
-      <div className="
-        text-sm
-        text-gray-400
-      ">
+      <div className="text-sm text-gray-400">
         {title}
       </div>
 
