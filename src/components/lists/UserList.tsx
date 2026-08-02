@@ -11,11 +11,11 @@ import SearchInput from "../ui/SearchInput";
 
 interface Props {
 
-  title:string;
+  title: string;
 
-  users:InstagramUser[];
+  users: InstagramUser[];
 
-  showDate?:boolean;
+  showDate?: boolean;
 
 }
 
@@ -27,11 +27,11 @@ export default function UserList({
 
   showDate = false
 
-}:Props) {
+}: Props) {
 
 
 
-  const [search,setSearch] =
+  const [search, setSearch] =
     useState("");
 
 
@@ -99,6 +99,7 @@ export default function UserList({
           ">
 
 
+
             {
               filtered.map(
                 user =>
@@ -126,6 +127,7 @@ export default function UserList({
                       px-2
                       py-2
                       hover:bg-white/10
+                      transition
                     "
 
                   >
@@ -134,6 +136,7 @@ export default function UserList({
 
                     <span className="
                       text-sm
+                      font-medium
                     ">
                       @{user.username}
                     </span>
@@ -152,9 +155,13 @@ export default function UserList({
                           text-gray-500
                         ">
                           {
-                            user.followedAt
-                            .toLocaleDateString(
-                              "it-IT"
+                            user.followedAt.toLocaleDateString(
+                              "it-IT",
+                              {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric"
+                              }
                             )
                           }
                         </span>
@@ -165,13 +172,12 @@ export default function UserList({
 
 
 
-
                   </a>
 
                 )
-
               )
             }
+
 
 
           </div>
@@ -179,6 +185,7 @@ export default function UserList({
         )
 
       }
+
 
 
     </div>
