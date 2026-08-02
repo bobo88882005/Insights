@@ -1,14 +1,17 @@
 export interface InstagramUser {
 
-  username:string;
+  username: string;
 
-  profileUrl:string;
+  profileUrl: string;
 
-  followedAt:Date | null;
+  followedAt: Date | null;
 
   source:
-    "followers" |
-    "following";
+    | "followers"
+    | "following"
+    | "pending"
+    | "received"
+    | "recentlyUnfollowed";
 
 }
 
@@ -17,15 +20,15 @@ export interface InstagramUser {
 
 export interface ParsedInstagramData {
 
-  followers:InstagramUser[];
+  followers: InstagramUser[];
 
-  following:InstagramUser[];
+  following: InstagramUser[];
 
-  pendingRequests:InstagramUser[];
+  pendingRequests: InstagramUser[];
 
-  receivedRequests:InstagramUser[];
+  receivedRequests: InstagramUser[];
 
-  recentlyUnfollowed:InstagramUser[];
+  recentlyUnfollowed: InstagramUser[];
 
 }
 
@@ -35,58 +38,56 @@ export interface ParsedInstagramData {
 export interface InstagramAnalysis {
 
 
-  followers:InstagramUser[];
+  followers: InstagramUser[];
 
 
-  following:InstagramUser[];
+  following: InstagramUser[];
 
 
-  notFollowingBack:InstagramUser[];
+  notFollowingBack: InstagramUser[];
 
 
-  youDontFollowBack:InstagramUser[];
+  youDontFollowBack: InstagramUser[];
 
 
-
-  pendingRequests:InstagramUser[];
-
-
-  receivedRequests:InstagramUser[];
+  pendingRequests: InstagramUser[];
 
 
-  recentlyUnfollowed:InstagramUser[];
+  receivedRequests: InstagramUser[];
 
 
-
-  possibleInactive:InstagramUser[];
-
-
-  excludedUsers:InstagramUser[];
+  recentlyUnfollowed: InstagramUser[];
 
 
-
-  followersCount:number;
-
-
-  followingCount:number;
+  possibleInactive: InstagramUser[];
 
 
-  originalFollowingCount:number;
-
-
-  excludedCount:number;
+  excludedUsers: InstagramUser[];
 
 
 
-  reciprocalCount:number;
+
+  followersCount: number;
 
 
-  notFollowingBackCount:number;
+  followingCount: number;
 
 
-  youDontFollowBackCount:number;
+  originalFollowingCount: number;
 
 
-  inactiveCount:number;
+  excludedCount: number;
+
+
+  reciprocalCount: number;
+
+
+  notFollowingBackCount: number;
+
+
+  youDontFollowBackCount: number;
+
+
+  inactiveCount: number;
 
 }
