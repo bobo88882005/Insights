@@ -1,32 +1,38 @@
+export type InstagramSource =
+  | "followers"
+  | "following"
+  | "pending"
+  | "received"
+  | "recentlyUnfollowed";
+
+
+
 export interface InstagramUser {
 
-  username:string;
+  username: string;
 
-  profileUrl:string;
+  profileUrl: string;
 
-  followedAt:Date | null;
+  followedAt: Date | null;
 
-  source:
-    "followers" |
-    "following";
+  source: InstagramSource;
 
 }
 
 
 
 
-
 export interface ParsedInstagramData {
 
-  followers:InstagramUser[];
+  followers: InstagramUser[];
 
-  following:InstagramUser[];
+  following: InstagramUser[];
 
-  pendingRequests:InstagramUser[];
+  pendingRequests: InstagramUser[];
 
-  receivedRequests:InstagramUser[];
+  receivedRequests: InstagramUser[];
 
-  recentlyUnfollowed:InstagramUser[];
+  recentlyUnfollowed: InstagramUser[];
 
 }
 
@@ -37,57 +43,63 @@ export interface ParsedInstagramData {
 export interface InstagramAnalysis {
 
 
-  followers:InstagramUser[];
+  followers: InstagramUser[];
 
 
-  following:InstagramUser[];
-
-
-
-  notFollowingBack:InstagramUser[];
-
-
-  youDontFollowBack:InstagramUser[];
+  following: InstagramUser[];
 
 
 
-
-  pendingRequests:InstagramUser[];
-
-
-  receivedRequests:InstagramUser[];
+  notFollowingBack: InstagramUser[];
 
 
-  recentlyUnfollowed:InstagramUser[];
+  youDontFollowBack: InstagramUser[];
 
 
 
 
-  possibleInactive:InstagramUser[];
+  pendingRequests: InstagramUser[];
+
+
+  receivedRequests: InstagramUser[];
+
+
+  recentlyUnfollowed: InstagramUser[];
 
 
 
 
-  followersCount:number;
+  possibleInactive: InstagramUser[];
 
 
-  followingCount:number;
-
-
-  originalFollowingCount:number;
-
-
-  inactiveCount:number;
+  excludedUsers: InstagramUser[];
 
 
 
-  reciprocalCount:number;
+
+  followersCount: number;
 
 
-  notFollowingBackCount:number;
+  followingCount: number;
 
 
-  youDontFollowBackCount:number;
+  originalFollowingCount: number;
+
+
+  excludedCount: number;
+
+
+  inactiveCount: number;
+
+
+
+  reciprocalCount: number;
+
+
+  notFollowingBackCount: number;
+
+
+  youDontFollowBackCount: number;
 
 
 }
