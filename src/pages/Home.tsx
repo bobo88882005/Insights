@@ -30,7 +30,6 @@ export default function Home() {
     useRef<HTMLInputElement>(null);
 
 
-
   const {
     analysis,
     loading,
@@ -77,7 +76,6 @@ export default function Home() {
 
 
 
-
   const tabs = [
 
     {
@@ -87,6 +85,7 @@ export default function Home() {
         analysis?.followersCount ?? 0
     },
 
+
     {
       id: "following",
       title: "Following",
@@ -94,12 +93,14 @@ export default function Home() {
         analysis?.followingCount ?? 0
     },
 
+
     {
       id: "notFollowingBack",
       title: "Non ricambiano",
       count:
         analysis?.notFollowingBackCount ?? 0
     },
+
 
     {
       id: "pending",
@@ -109,7 +110,6 @@ export default function Home() {
     }
 
   ] as const;
-
 
 
 
@@ -160,7 +160,6 @@ export default function Home() {
 
 
 
-
   return (
 
     <div
@@ -172,12 +171,14 @@ export default function Home() {
 
 
 
+
       <div>
 
         <h1
           className="
             text-2xl
             font-bold
+            tracking-tight
           "
         >
           Instagram Insights
@@ -234,11 +235,11 @@ export default function Home() {
                   setActiveTab(tab.id)
                 }
 
+
                 className={`
                   rounded-xl
                   py-3
-                  px-1
-                  text-xs
+                  text-[11px]
                   transition-all
 
                   ${
@@ -249,14 +250,12 @@ export default function Home() {
                     "
                     bg-white/15
                     text-white
-                    shadow-sm
                     "
 
                     :
 
                     "
                     text-gray-400
-                    hover:text-white
                     "
 
                   }
@@ -265,7 +264,6 @@ export default function Home() {
 
               >
 
-
                 <div>
                   {tab.title}
                 </div>
@@ -273,7 +271,6 @@ export default function Home() {
 
                 <div
                   className="
-                    text-[11px]
                     mt-1
                     opacity-70
                   "
@@ -351,18 +348,18 @@ export default function Home() {
       >
 
 
+
         <p
           className="
             px-3
-            pt-2
-            pb-1
+            py-2
             text-[11px]
             uppercase
-            tracking-wide
+            tracking-wider
             text-gray-500
           "
         >
-          Altri dati
+          Secondari
         </p>
 
 
@@ -401,7 +398,6 @@ export default function Home() {
           }
 
         />
-
 
 
       </div>
@@ -457,8 +453,8 @@ export default function Home() {
             via-pink-500
             to-orange-400
             font-semibold
-            active:scale-[0.98]
             transition
+            active:scale-95
           "
 
         >
@@ -490,6 +486,7 @@ export default function Home() {
 
 
 
+
         {
           error &&
 
@@ -507,7 +504,6 @@ export default function Home() {
 
 
       </div>
-
 
 
 
