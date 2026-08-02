@@ -10,6 +10,8 @@ import {
 
 
 
+
+
 function uniqueUsers(
   users: InstagramUser[]
 ): InstagramUser[] {
@@ -19,38 +21,35 @@ function uniqueUsers(
     new Map<string, InstagramUser>();
 
 
-
-  users.forEach(user => {
-
-
-    const username =
-      user.username
-        .toLowerCase()
-        .trim();
+  users.forEach(
+    user => {
 
 
+      const username =
+        user.username
+          .toLowerCase()
+          .trim();
 
-    // Ignora profili eliminati da Instagram
-    if (
-      username.startsWith("__deleted__")
-    ) {
 
-      return;
+
+      if(
+        username.startsWith("__deleted__")
+      )
+        return;
+
+
+
+      map.set(
+        username,
+        {
+          ...user,
+          username
+        }
+      );
+
 
     }
-
-
-
-    map.set(
-      username,
-      {
-        ...user,
-        username
-      }
-    );
-
-
-  });
+  );
 
 
 
@@ -66,16 +65,12 @@ function uniqueUsers(
 
 
 
+
 export function analyzeInstagram(
   data: ParsedInstagramData
 ): InstagramAnalysis {
 
 
-
-  /*
-    Pulizia iniziale:
-    rimuove duplicati e profili __deleted__
-  */
 
 
   const followers =
@@ -85,44 +80,30 @@ export function analyzeInstagram(
 
 
 
-  const originalFollowing =
+  const following =
     uniqueUsers(
       data.following
     );
 
 
 
-
-
-  /*
-    Esclusioni manuali
-  */
-
-
-  const excludedUsers =
-    originalFollowing.filter(
-      user =>
-        isExcluded(
-          user.username
-        )
+  const pendingRequests =
+    uniqueUsers(
+      data.pendingRequests
     );
 
 
 
+  const receivedRequests =
+    uniqueUsers(
+      data.receivedRequests
+    );
 
 
-  /*
-    Following effettivo
-    senza esclusioni manuali
-  */
 
-
-  const following =
-    originalFollowing.filter(
-      user =>
-        !isExcluded(
-          user.username
-        )
+  const recentlyUnfollowed =
+    uniqueUsers(
+      data.recentlyUnfollowed
     );
 
 
@@ -155,14 +136,36 @@ export function analyzeInstagram(
 
 
 
-  /*
-    Utenti che segui
-    ma che non ti seguono
-  */
+
+  const excludedUsers =
+    following.filter(
+      user =>
+        isExcluded(
+          user.username
+        )
+    );
+
+
+
+
+
+  const cleanFollowing =
+    following.filter(
+      user =>
+        !isExcluded(
+          user.username
+        )
+    );
+
+
+
+
+
+
 
 
   const notFollowingBack =
-    following.filter(
+    cleanFollowing.filter(
       user =>
         !followerNames.has(
           user.username
@@ -174,11 +177,6 @@ export function analyzeInstagram(
 
 
 
-
-  /*
-    Utenti che ti seguono
-    ma che tu non segui
-  */
 
 
   const youDontFollowBack =
@@ -195,13 +193,9 @@ export function analyzeInstagram(
 
 
 
-  /*
-    Seguiti reciproci
-  */
-
 
   const reciprocal =
-    following.filter(
+    cleanFollowing.filter(
       user =>
         followerNames.has(
           user.username
@@ -214,43 +208,8 @@ export function analyzeInstagram(
 
 
 
-  /*
-    Possibili inattivi:
-    prima versione basata su segnali
-    dell'username
-  */
-
-
   const possibleInactive =
-    following.filter(
-      user => {
-
-
-        const username =
-          user.username.toLowerCase();
-
-
-
-        return (
-
-          username.length > 25
-
-          ||
-
-          username.includes(
-            "inactive"
-          )
-
-          ||
-
-          username.includes(
-            "deleted"
-          )
-
-        );
-
-      }
-    );
+    excludedUsers;
 
 
 
@@ -262,12 +221,11 @@ export function analyzeInstagram(
   return {
 
 
-
     followers,
 
 
-
-    following,
+    following:
+      cleanFollowing,
 
 
 
@@ -279,24 +237,15 @@ export function analyzeInstagram(
 
 
 
-    pendingRequests:
-      uniqueUsers(
-        data.pendingRequests
-      ),
+    pendingRequests,
 
 
 
-    receivedRequests:
-      uniqueUsers(
-        data.receivedRequests
-      ),
+    receivedRequests,
 
 
 
-    recentlyUnfollowed:
-      uniqueUsers(
-        data.recentlyUnfollowed
-      ),
+    recentlyUnfollowed,
 
 
 
@@ -314,12 +263,12 @@ export function analyzeInstagram(
 
 
     followingCount:
-      following.length,
+      cleanFollowing.length,
 
 
 
     originalFollowingCount:
-      originalFollowing.length,
+      following.length,
 
 
 
@@ -346,7 +295,7 @@ export function analyzeInstagram(
     inactiveCount:
       possibleInactive.length
 
-
   };
+
 
 }
