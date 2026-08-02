@@ -3,28 +3,45 @@ import { InstagramUser } from "../types/instagram";
 
 function createUser(
   username: string,
-  source: "followers" | "following"
+  source: "followers" | "following",
+  timestamp?: number
 ): InstagramUser | null {
 
-  const clean = username
-    .trim()
-    .toLowerCase()
-    .replace("@", "");
+
+  const clean =
+    username
+      .trim()
+      .toLowerCase()
+      .replace("@", "");
 
 
-  if (!/^[a-z0-9._]+$/.test(clean)) {
+
+  if (
+    !/^[a-z0-9._]+$/.test(clean)
+  ) {
     return null;
   }
 
 
+
   return {
+
     username: clean,
+
     profileUrl:
       `https://www.instagram.com/${clean}/`,
-    followedAt: null,
+
+    followedAt:
+      timestamp
+        ? new Date(timestamp * 1000)
+        : null,
+
     source
+
   };
+
 }
+
 
 
 
@@ -34,51 +51,77 @@ export function extractUsersFromJSON(
 ): InstagramUser[] {
 
 
-  const users = new Map<string, InstagramUser>();
+  const users =
+    new Map<string, InstagramUser>();
 
 
-  function scan(value: any) {
 
-    if (!value) return;
+  function scan(
+    value:any
+  ) {
+
+
+    if (!value)
+      return;
+
 
 
     if (Array.isArray(value)) {
 
-      value.forEach(item => scan(item));
+      value.forEach(
+        item => scan(item)
+      );
+
       return;
 
     }
 
 
-    if (typeof value === "object") {
 
 
-      // formato Instagram recente
+    if (
+      typeof value === "object"
+    ) {
+
+
+
       if (
         value.string_list_data &&
-        Array.isArray(value.string_list_data)
+        Array.isArray(
+          value.string_list_data
+        )
       ) {
 
-        value.string_list_data.forEach(
-          (item: any) => {
 
-            if (item.value) {
+        value.string_list_data.forEach(
+          (item:any)=>{
+
+
+            if (
+              item.value
+            ) {
+
 
               const user =
                 createUser(
                   item.value,
-                  source
+                  source,
+                  item.timestamp
                 );
 
 
+
               if (user) {
+
                 users.set(
                   user.username,
                   user
                 );
+
               }
 
             }
+
 
           }
         );
@@ -86,15 +129,24 @@ export function extractUsersFromJSON(
       }
 
 
+
+
       Object.values(value)
-        .forEach(child => scan(child));
+        .forEach(
+          child =>
+            scan(child)
+        );
+
 
     }
+
 
   }
 
 
+
   scan(json);
+
 
 
   return Array.from(
