@@ -57,8 +57,11 @@ export default function Home() {
       e.target.files?.[0];
 
 
-    if(file)
+    if(file){
+
       await uploadZip(file);
+
+    }
 
   }
 
@@ -66,27 +69,35 @@ export default function Home() {
 
 
 
-  function users(){
 
+  function currentUsers(){
 
     if(!analysis)
       return [];
 
 
+    switch(activeTab){
 
-    if(activeTab==="followers")
-      return analysis.followers;
+      case "followers":
 
-
-    if(activeTab==="following")
-      return analysis.following;
+        return analysis.followers;
 
 
-    if(activeTab==="notFollowingBack")
-      return analysis.notFollowingBack;
+      case "following":
+
+        return analysis.following;
 
 
-    return analysis.pendingRequests;
+      case "notFollowingBack":
+
+        return analysis.notFollowingBack;
+
+
+      case "pending":
+
+        return analysis.pendingRequests;
+
+    }
 
   }
 
@@ -105,7 +116,7 @@ export default function Home() {
       count:
         analysis?.followersCount ?? 0,
       icon:
-        <Users size={18}/>
+        <Users size={20}/>
     },
 
 
@@ -115,7 +126,7 @@ export default function Home() {
       count:
         analysis?.followingCount ?? 0,
       icon:
-        <UserCheck size={18}/>
+        <UserCheck size={20}/>
     },
 
 
@@ -125,7 +136,7 @@ export default function Home() {
       count:
         analysis?.notFollowingBackCount ?? 0,
       icon:
-        <UserMinus size={18}/>
+        <UserMinus size={20}/>
     },
 
 
@@ -135,8 +146,9 @@ export default function Home() {
       count:
         analysis?.pendingRequests.length ?? 0,
       icon:
-        <Clock size={18}/>
+        <Clock size={20}/>
     }
+
 
   ] as const;
 
@@ -153,28 +165,42 @@ export default function Home() {
       className="
         min-h-screen
         px-4
-        pb-8
+        pb-10
       "
     >
 
 
 
+
       <header
         className="
+          sticky
+          top-0
+          z-30
+          -mx-4
+          px-4
           pt-8
           pb-5
+          bg-black/40
+          backdrop-blur-xl
+          border-b
+          border-white/10
         "
       >
 
+
         <h1
           className="
-            text-4xl
+            text-3xl
             font-bold
             tracking-tight
           "
         >
+
           Insights
+
         </h1>
+
 
 
         <p
@@ -184,7 +210,9 @@ export default function Home() {
             mt-1
           "
         >
-          Instagram followers analysis
+
+          Followers · Following · Activity
+
         </p>
 
 
@@ -203,8 +231,10 @@ export default function Home() {
           grid
           grid-cols-2
           gap-3
+          mt-5
         "
       >
+
 
 
         {
@@ -219,16 +249,18 @@ export default function Home() {
                 setActiveTab(tab.id)
               }
 
+
               className={`
-                rounded-2xl
+
+                rounded-3xl
                 p-4
-                text-left
                 border
                 transition-all
                 duration-300
+                text-left
 
                 ${
-                  activeTab===tab.id
+                  activeTab === tab.id
 
                   ?
 
@@ -238,7 +270,7 @@ export default function Home() {
                   via-purple-500
                   to-orange-400
                   border-transparent
-                  shadow-lg
+                  shadow-xl
                   "
 
                   :
@@ -254,9 +286,10 @@ export default function Home() {
 
             >
 
+
               <div
                 className="
-                  mb-3
+                  mb-4
                 "
               >
 
@@ -268,14 +301,15 @@ export default function Home() {
 
               <div
                 className="
-                  text-sm
                   font-semibold
+                  text-sm
                 "
               >
 
                 {tab.label}
 
               </div>
+
 
 
 
@@ -292,11 +326,14 @@ export default function Home() {
               </div>
 
 
+
             </button>
 
 
           ))
+
         }
+
 
 
       </section>
@@ -317,16 +354,16 @@ export default function Home() {
           border-white/10
           bg-white/5
           overflow-hidden
+          animate-ios-in
         "
       >
-
 
         <UserList
 
           title=""
 
           users={
-            users()
+            currentUsers()
           }
 
         />
@@ -346,10 +383,10 @@ export default function Home() {
         className="
           mt-5
           rounded-2xl
+          bg-white/[0.03]
           border
           border-white/10
-          bg-white/[0.03]
-          p-3
+          p-4
         "
       >
 
@@ -357,21 +394,24 @@ export default function Home() {
         <p
           className="
             text-xs
+            uppercase
+            tracking-wide
             text-gray-500
-            mb-2
-            px-2
+            mb-3
           "
         >
-          Altro
+
+          Activity
+
         </p>
 
 
 
         <div
           className="
+            space-y-3
             text-sm
             text-gray-300
-            space-y-3
           "
         >
 
@@ -415,6 +455,7 @@ export default function Home() {
         "
       >
 
+
         <input
 
           ref={fileInput}
@@ -437,6 +478,7 @@ export default function Home() {
             fileInput.current?.click()
           }
 
+
           className="
             w-full
             rounded-2xl
@@ -446,6 +488,7 @@ export default function Home() {
             from-purple-500
             via-pink-500
             to-orange-400
+            shadow-lg
           "
 
         >
@@ -466,7 +509,10 @@ export default function Home() {
             "Carica ZIP Instagram"
           }
 
+
         </button>
+
+
 
 
         {
@@ -474,12 +520,14 @@ export default function Home() {
 
           <p
             className="
-              text-red-400
-              text-sm
               mt-3
+              text-sm
+              text-red-400
             "
           >
+
             {error}
+
           </p>
 
         }
