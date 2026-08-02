@@ -83,13 +83,11 @@ export default function Home() {
 
 
 
-
       <div className="
         grid
         grid-cols-2
         gap-3
       ">
-
 
         <StatCard
           title="Followers"
@@ -100,7 +98,6 @@ export default function Home() {
             <Users size={18}/>
           }
         />
-
 
 
         <StatCard
@@ -118,9 +115,7 @@ export default function Home() {
           }
         />
 
-
       </div>
-
 
 
 
@@ -143,7 +138,6 @@ export default function Home() {
         />
 
 
-
         <StatCard
           title="Possibili inattivi"
           value={
@@ -156,8 +150,6 @@ export default function Home() {
 
 
       </div>
-
-
 
 
 
@@ -185,7 +177,6 @@ export default function Home() {
           onChange={handleFile}
 
         />
-
 
 
         <button
@@ -223,7 +214,6 @@ export default function Home() {
 
 
 
-
         {
           error &&
           (
@@ -248,7 +238,6 @@ export default function Home() {
 
 
 
-
       {
         analysis &&
         (
@@ -257,26 +246,18 @@ export default function Home() {
 
 
 
-
-
             <CollapsibleCard
-
               title="Non ricambiano"
-
               count={
                 analysis.notFollowingBackCount
               }
-
             >
 
               <UserList
-
                 title=""
-
                 users={
                   analysis.notFollowingBack
                 }
-
               />
 
             </CollapsibleCard>
@@ -285,19 +266,12 @@ export default function Home() {
 
 
 
-
-
-
             <CollapsibleCard
-
               title="Esclusi manualmente"
-
               count={
                 analysis.excludedCount
               }
-
             >
-
 
               <div className="
                 flex
@@ -309,19 +283,14 @@ export default function Home() {
                   esclusi dal conteggio Following
                 </Badge>
 
-
               </div>
 
 
-
               <UserList
-
                 title=""
-
                 users={
                   analysis.excludedUsers
                 }
-
               />
 
             </CollapsibleCard>
@@ -331,26 +300,18 @@ export default function Home() {
 
 
 
-
-
             <CollapsibleCard
-
               title="Possibili inattivi"
-
               count={
                 analysis.inactiveCount
               }
-
             >
 
               <UserList
-
                 title=""
-
                 users={
                   analysis.possibleInactive
                 }
-
               />
 
             </CollapsibleCard>
@@ -361,25 +322,19 @@ export default function Home() {
 
 
 
-
             <CollapsibleCard
-
               title="Followers"
-
               count={
                 analysis.followersCount
               }
-
             >
 
               <UserList
-
                 title=""
-
                 users={
                   analysis.followers
                 }
-
+                showDate
               />
 
             </CollapsibleCard>
@@ -392,23 +347,18 @@ export default function Home() {
 
 
             <CollapsibleCard
-
               title="Following"
-
               count={
                 analysis.followingCount
               }
-
             >
 
               <UserList
-
                 title=""
-
                 users={
                   analysis.following
                 }
-
+                showDate
               />
 
             </CollapsibleCard>
@@ -419,25 +369,18 @@ export default function Home() {
 
 
 
-
             <CollapsibleCard
-
               title="Richieste ricevute"
-
               count={
                 analysis.receivedRequests.length
               }
-
             >
 
               <UserList
-
                 title=""
-
                 users={
                   analysis.receivedRequests
                 }
-
               />
 
             </CollapsibleCard>
@@ -448,25 +391,18 @@ export default function Home() {
 
 
 
-
             <CollapsibleCard
-
               title="Pending requests"
-
               count={
                 analysis.pendingRequests.length
               }
-
             >
 
               <UserList
-
                 title=""
-
                 users={
                   analysis.pendingRequests
                 }
-
               />
 
             </CollapsibleCard>
@@ -477,25 +413,18 @@ export default function Home() {
 
 
 
-
             <CollapsibleCard
-
               title="Recently unfollowed"
-
               count={
                 analysis.recentlyUnfollowed.length
               }
-
             >
 
               <UserList
-
                 title=""
-
                 users={
                   analysis.recentlyUnfollowed
                 }
-
               />
 
             </CollapsibleCard>
@@ -506,6 +435,7 @@ export default function Home() {
 
         )
       }
+
 
 
     </div>
@@ -584,6 +514,7 @@ function StatCard({
       {
         subtitle &&
         (
+
           <div className="
             text-[11px]
             text-gray-500
@@ -591,8 +522,10 @@ function StatCard({
           ">
             {subtitle}
           </div>
+
         )
       }
+
 
 
     </div>
